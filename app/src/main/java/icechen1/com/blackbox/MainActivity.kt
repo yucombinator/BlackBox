@@ -5,11 +5,13 @@ import android.view.Menu
 import android.view.MenuItem
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer
+import it.neokree.materialnavigationdrawer.elements.MaterialSection
 
 public class MainActivity : MaterialNavigationDrawer<Any>() {
 
-    override fun init(bundle: Bundle) {
+    override fun init(bundle: Bundle?) {
 
+        addSection(newSection(getResources().getString(R.string.list), MainActivityFragment()))
         enableToolbarElevation();
     }
 
