@@ -1,11 +1,11 @@
-package icechen1.com.blackbox
+package icechen1.com.blackbox.activities
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-
+import icechen1.com.blackbox.R
+import icechen1.com.blackbox.fragments.MainActivityFragment
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer
-import it.neokree.materialnavigationdrawer.elements.MaterialSection
 
 public class MainActivity : MaterialNavigationDrawer<Any>() {
 
@@ -13,6 +13,10 @@ public class MainActivity : MaterialNavigationDrawer<Any>() {
 
         addSection(newSection(getResources().getString(R.string.list), MainActivityFragment()))
         enableToolbarElevation();
+        setBackPattern(MaterialNavigationDrawer.BACKPATTERN_BACK_TO_FIRST)
+        addMultiPaneSupport()
+        //Header image
+        setDrawerHeaderImage(R.drawable.night)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

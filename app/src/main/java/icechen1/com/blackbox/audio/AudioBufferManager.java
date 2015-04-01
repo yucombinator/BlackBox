@@ -1,12 +1,11 @@
 package icechen1.com.blackbox.audio;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 
 import android.media.AudioFormat;
-import android.media.AudioManager;
 import android.media.AudioRecord;
-import android.media.AudioTrack;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Message;
@@ -16,57 +15,58 @@ public class AudioBufferManager extends Thread{
     public interface BufferCallBack {
         public void onBufferUpdate(int[] b);
     }
-    static String LOG_TAG = "SpeechJammer";
+    static String LOG_TAG = "BlackBox";
     AudioRecord arecord;
-    AudioTrack atrack;
-    int SAMPLE_RATE;
+    //AudioTrack atrack;
+    int sampleRate;
     static int buffersize;
     private boolean started = true;
     private static BufferCallBack mCallBack;
-    double delay;
+    int bufferDuration;
 
     public AudioBufferManager(int time, BufferCallBack callback) {
         mCallBack = callback;
-        delay=time;
+        bufferDuration=time;
         // Prepare the AudioRecord & AudioTrack
         buffersize = 3584;
         try {
             //Find the best supported sample rate
             for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {  // add the rates you wish to check against
-                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_DEFAULT , AudioFormat.ENCODING_PCM_16BIT);
+                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_STEREO , AudioFormat.ENCODING_PCM_16BIT);
                 if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
                     // buffer size is valid, Sample rate supported
-                    SAMPLE_RATE = rate;
+                    sampleRate = rate;
                     buffersize = bufferSize;
-                    Log.i(LOG_TAG,"Recording sample rate:" + SAMPLE_RATE + " with buffer size:"+ buffersize);
+                    Log.i(LOG_TAG,"Recording sample rate:" + sampleRate + " with buffer size:"+ buffersize);
                 }
             }
 
-            Log.i(LOG_TAG,"Final sample rate:" + SAMPLE_RATE + " with buffer size:"+ buffersize);
+            Log.i(LOG_TAG,"Final sample rate:" + sampleRate + " with buffer size:"+ buffersize);
 
             Log.i(LOG_TAG,"Initializing Audio Record and Audio Playing objects");
-            Log.i(LOG_TAG,"Delay time is: " + delay + " ms");
+            Log.i(LOG_TAG,"Length of time is: " + bufferDuration + " ms");
 
         } catch (Throwable t) {
             Log.e(LOG_TAG, "Initializing Audio Record and Play objects Failed "+t.getLocalizedMessage());
         }
         //Set up the recorder and the player
         arecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO,
+                sampleRate, AudioFormat.CHANNEL_IN_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT, buffersize * 1);
-        int _audioTrackSize = android.media.AudioTrack.getMinBufferSize(
-                SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO,
+        /*int _audioTrackSize = android.media.AudioTrack.getMinBufferSize(
+                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
         atrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO,
+                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, _audioTrackSize,
                 AudioTrack.MODE_STREAM);
-        atrack.setPlaybackRate(SAMPLE_RATE);
+        atrack.setPlaybackRate(sampleRate);*/
     }
-
+/*
     int getAudioSessionID(){
         return atrack.getAudioSessionId();
     }
+    */
 
     @Override
     public void run() {
@@ -76,28 +76,9 @@ public class AudioBufferManager extends Thread{
         //Create our buffers
         byte[] buffer  = new byte[buffersize];
         //A circular buffer
-        CircularByteBuffer circBuffer = new CircularByteBuffer(SAMPLE_RATE*10);
-        //Add an offset to the circular buffer
-        int emptySamples = (int)(SAMPLE_RATE * (delay/1000)); //ms to secs
-
-        if((emptySamples%2)==0){
-            //Even number for emptySamples, do nothing
-        }else{
-            //BUG odd emptySamples value produce weird noise, so we add one to it.
-            emptySamples += 1;
-        }
-        Log.i(LOG_TAG, "Empty Sample: "+emptySamples);
-
-        byte[] emptyBuf = new byte[emptySamples];
-        Arrays.fill(emptyBuf, (byte)Byte.MIN_VALUE );
-        try {
-            circBuffer.getOutputStream().write(emptyBuf, 0, emptySamples);
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * bufferDuration);
         arecord.startRecording();
-        atrack.play();
+        //atrack.play();
         int i = 0;
         // start recording and playing back
         while(started) {
@@ -106,10 +87,8 @@ public class AudioBufferManager extends Thread{
                 arecord.read(buffer, 0, buffersize);
                 //Read the byte array data to the circular buffer
                 circBuffer.getOutputStream().write(buffer, 0, buffersize);
-                //Read the beginning of the circular buffer to the normal byte array until one sample rate of content
-                circBuffer.getInputStream().read(buffer, 0, buffersize);
                 //Play the byte array content
-                atrack.write(buffer, 0, buffersize);
+                //atrack.write(buffer, 0, buffersize);
                 if(i%2 == 0){ //TODO This should be an option
                     Message m = new Message();
                     m.obj  = buffer;
@@ -128,12 +107,27 @@ public class AudioBufferManager extends Thread{
 
         }
 
+        try {
+            AudioFileWriter writer = new AudioFileWriter(null);
+
+            InputStream in = circBuffer.getInputStream();
+            writer.setupHeader(arecord, circBuffer.getAvailable());
+
+            while(in.read(buffer, 0, buffersize) != -1){
+                writer.write(buffer, buffersize);
+            }
+            writer.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(LOG_TAG, "you fucked up" + e.toString());
+        }
+
         arecord.stop();
         arecord.release();
-        atrack.stop();
+        //atrack.stop();
 
         Log.i(LOG_TAG, "loopback exit");
-        return;
     }
     public void close(){
         started = false;

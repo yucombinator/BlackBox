@@ -1,7 +1,8 @@
-package icechen1.com.blackbox
+package icechen1.com.blackbox.fragments
 
-import android.support.v4.app.Fragment
+import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -9,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.melnykov.fab.FloatingActionButton
-
+import icechen1.com.blackbox.R
+import icechen1.com.blackbox.activities.MainActivity
+import icechen1.com.blackbox.services.AudioRecordService
 
 /**
  * A placeholder fragment containing a simple view.
@@ -53,7 +56,10 @@ public class MainActivityFragment : Fragment() {
         }
         val fab = view.findViewById(R.id.fab) as FloatingActionButton
         fab.attachToRecyclerView(mRecyclerView)
-
+        fab.setOnClickListener(View.OnClickListener(){
+            var startRecord = Intent(getActivity(),javaClass<AudioRecordService>())
+            getActivity().startService(startRecord)
+        })
         return view
     }
     /**

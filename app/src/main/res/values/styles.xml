@@ -1,8 +1,9 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="MaterialNavigationDrawerTheme">
+    <style name="AppTheme" parent="MaterialNavigationDrawerTheme.TranslucentKitKatStatusBar">
         <!-- Customize your theme here. -->
+        <item name="drawerType">@integer/DRAWERTYPE_IMAGE</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
