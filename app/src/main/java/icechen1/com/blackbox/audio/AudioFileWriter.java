@@ -2,6 +2,7 @@ package icechen1.com.blackbox.audio;
 
 import android.media.AudioRecord;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -27,7 +28,7 @@ public class AudioFileWriter {
             url = String.valueOf(date.getTime());
         }
         file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                +"/"+url+".wav");
+                +"/BlackBox/"+url+".wav");
         os = new FileOutputStream(file);
         bos = new BufferedOutputStream(os);
         dos = new DataOutputStream(bos);
@@ -52,6 +53,7 @@ public class AudioFileWriter {
     void close() throws IOException {
         dos.flush();
         dos.close();
+        Log.i("BlackBox", "Saved File at " + file.toURI());
     }
 
     private static final int RECORDER_BPP = 16;
