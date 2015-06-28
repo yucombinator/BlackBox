@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.melnykov.fab.FloatingActionButton
 import icechen1.com.blackbox.R
 import icechen1.com.blackbox.activities.MainActivity
+import icechen1.com.blackbox.activities.RecordActivity
 import icechen1.com.blackbox.services.AudioRecordService
 
 /**
@@ -57,8 +58,8 @@ public class MainActivityFragment : Fragment() {
         val fab = view.findViewById(R.id.fab) as FloatingActionButton
         fab.attachToRecyclerView(mRecyclerView)
         fab.setOnClickListener(View.OnClickListener(){
-            var startRecord = Intent(getActivity(),javaClass<AudioRecordService>())
-            getActivity().startService(startRecord)
+            var recordActivity = Intent(getActivity(),javaClass<RecordActivity>())
+            getActivity().startActivity(recordActivity)
         })
         return view
     }

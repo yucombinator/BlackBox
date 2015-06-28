@@ -16,7 +16,7 @@ public class MainActivity : MaterialNavigationDrawer<Any>() {
         setBackPattern(MaterialNavigationDrawer.BACKPATTERN_BACK_TO_FIRST)
         addMultiPaneSupport()
         //Header image
-        setDrawerHeaderImage(R.drawable.night)
+        //setDrawerHeaderImage(R.drawable.night)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
