@@ -1,11 +1,15 @@
 package icechen1.com.blackbox.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.AudioBufferManager;
 
 /**
@@ -28,6 +32,8 @@ public class AudioRecordService extends Service {
         }, 10000);
 
         // If we get killed, after returning from here, restart
+
+        startForeground(0, buildNotification());
         return Service.START_STICKY;
     }
 
@@ -50,5 +56,22 @@ public class AudioRecordService extends Service {
     }
     void stopRecording(){
         mAudio.close();
+    }
+
+    Notification buildNotification(){
+        Intent intent = new Intent(this, RecordActivity.class);
+        PendingIntent pendIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notif = new Notification.Builder(this)
+                .setUsesChronometer(true)
+                .addAction(R.mipmap.ic_launcher, "TEST", pendIntent)
+                .setTicker("Recording")
+                .setSubText("Recording")
+                .setContentTitle("BlackBox")
+                .setContentText("Recording")
+                .setContentIntent(pendIntent)
+                .build();
+
+        return notif;
     }
 }

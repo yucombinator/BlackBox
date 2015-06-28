@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.melnykov.fab.FloatingActionButton
+import android.support.design.widget.FloatingActionButton
 import icechen1.com.blackbox.R
 import icechen1.com.blackbox.activities.MainActivity
 import icechen1.com.blackbox.activities.RecordActivity
@@ -56,7 +56,7 @@ public class MainActivityFragment : Fragment() {
             mLayoutManager.scrollToPosition(mScrollPosition)
         }
         val fab = view.findViewById(R.id.fab) as FloatingActionButton
-        fab.attachToRecyclerView(mRecyclerView)
+        //fab.attachToRecyclerView(mRecyclerView)
         fab.setOnClickListener(View.OnClickListener(){
             var recordActivity = Intent(getActivity(),javaClass<RecordActivity>())
             getActivity().startActivity(recordActivity)

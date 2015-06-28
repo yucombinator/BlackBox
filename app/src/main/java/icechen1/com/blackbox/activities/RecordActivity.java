@@ -13,7 +13,8 @@ public class RecordActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //back
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true); //back
     }
 
 

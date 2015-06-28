@@ -4,6 +4,7 @@
     <style name="AppThemeToolbar" parent="Base.Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="drawerType">@integer/DRAWERTYPE_IMAGE</item>
+        <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
@@ -12,6 +13,7 @@
     <style name="AppTheme" parent="MaterialNavigationDrawerTheme.TranslucentKitKatStatusBar">
         <!-- Customize your theme here. -->
         <item name="drawerType">@integer/DRAWERTYPE_IMAGE</item>
+        <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
