@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton
 import icechen1.com.blackbox.R
 import icechen1.com.blackbox.activities.MainActivity
 import icechen1.com.blackbox.activities.RecordActivity
+import icechen1.com.blackbox.adapter.RecordingAdapter
 import icechen1.com.blackbox.services.AudioRecordService
 
 /**
@@ -46,8 +47,8 @@ public class MainActivityFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
         mRecyclerView!!.setHasFixedSize(true)
         val mLayoutManager = setRecyclerViewLayoutManager(mRecyclerView!!)
-        //mAdapter = new UserDataSetAdapter(this);
-        //mRecyclerView.setAdapter(mAdapter);
+        var mAdapter = RecordingAdapter(getActivity());
+        mRecyclerView!!.setAdapter(mAdapter);
         //mAdapter.setDataSet(list);
 
         //scroll to saved position

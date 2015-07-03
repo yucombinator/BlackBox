@@ -23,6 +23,7 @@ public class RecordActivityFragment extends Fragment {
     private View mRoot;
     private View mCtlPanel;
     private FABProgressCircle mFab;
+    private boolean mRecording = false;
 
     public RecordActivityFragment() {
     }
@@ -41,11 +42,10 @@ public class RecordActivityFragment extends Fragment {
         mRoot.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCtlPanel.getVisibility() != View.VISIBLE) {
+                if (!mRecording) {
                     startRecording();
-                }
-                else{
-                    hideControlPanel();
+                } else {
+                    stopRecording();
                 }
             }
         });
@@ -70,6 +70,7 @@ public class RecordActivityFragment extends Fragment {
         mCtlPanel.setVisibility(View.VISIBLE);
         anim.start();
         mFab.bringToFront();
+        mFab.show();
 
     }
     private void hideControlPanel(){
@@ -96,11 +97,22 @@ public class RecordActivityFragment extends Fragment {
 
         // start the animation
         anim.start();
+        mFab.beginFinalAnimation();
     }
 
     private void startRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
+        i.putExtra("mode", AudioRecordService.MODE_START);
         getActivity().startService(i);
         revealControlPanel();
+        mRecording = true;
+    }
+
+    private void stopRecording(){
+        Intent i = new Intent(getActivity(), AudioRecordService.class);
+        i.putExtra("mode", AudioRecordService.MODE_STOP);
+        getActivity().startService(i);
+        hideControlPanel();
+        mRecording = false;
     }
 }

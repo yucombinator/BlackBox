@@ -27,12 +27,16 @@ public class AudioFileWriter {
         if(url == null){
             url = String.valueOf(date.getTime());
         }
-        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                +"/BlackBox/"+url+".wav");
+        final File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/BlackBox/");
+        dir.mkdirs(); //create folders where write files
+        file = new File(dir, url+".wav");
         os = new FileOutputStream(file);
         bos = new BufferedOutputStream(os);
         dos = new DataOutputStream(bos);
+    }
 
+    public String getPath(){
+        return file.getPath();
     }
 
 

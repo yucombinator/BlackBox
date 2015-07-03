@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -11,9 +12,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import icechen1.com.blackbox.common.DatabaseHelper;
+
 public class AudioBufferManager extends Thread{
+    private final Context mContext;
+
     public interface BufferCallBack {
-        public void onBufferUpdate(int[] b);
+        void onBufferUpdate(int[] b);
     }
     static String LOG_TAG = "BlackBox";
     AudioRecord arecord;
@@ -24,7 +29,8 @@ public class AudioBufferManager extends Thread{
     private static BufferCallBack mCallBack;
     int bufferDuration;
 
-    public AudioBufferManager(int time, BufferCallBack callback) {
+    public AudioBufferManager(Context cxt, int time, BufferCallBack callback) {
+        mContext = cxt;
         mCallBack = callback;
         bufferDuration=time;
         // Prepare the AudioRecord & AudioTrack
@@ -44,7 +50,7 @@ public class AudioBufferManager extends Thread{
             Log.i(LOG_TAG,"Final sample rate:" + sampleRate + " with buffer size:"+ buffersize);
 
             Log.i(LOG_TAG,"Initializing Audio Record and Audio Playing objects");
-            Log.i(LOG_TAG,"Length of time is: " + bufferDuration + " ms");
+            Log.i(LOG_TAG,"Length of time is: " + bufferDuration + " s");
 
         } catch (Throwable t) {
             Log.e(LOG_TAG, "Initializing Audio Record and Play objects Failed "+t.getLocalizedMessage());
@@ -104,13 +110,13 @@ public class AudioBufferManager extends Thread{
                     started = false;
                 }
             }
-
         }
 
         try {
+            circBuffer.getOutputStream().close();
             AudioFileWriter writer = new AudioFileWriter(null);
 
-            InputStream in = circBuffer.getInputStream();
+            CircularByteBuffer.CircularByteBufferInputStream in = (CircularByteBuffer.CircularByteBufferInputStream) circBuffer.getInputStream();
             writer.setupHeader(arecord, circBuffer.getAvailable());
 
             while(in.read(buffer, 0, buffersize) != -1){
@@ -118,9 +124,15 @@ public class AudioBufferManager extends Thread{
             }
             writer.close();
 
+            long currentMillis = System.currentTimeMillis();
+            //save entry to the database
+            DatabaseHelper.saveRecording(mContext, String.valueOf(currentMillis), writer.getPath(), 0, currentMillis);
+
         } catch (IOException e) {
             e.printStackTrace();
-            Log.i(LOG_TAG, "you fucked up" + e.toString());
+            Log.e(LOG_TAG, "I/O error", e);
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
         arecord.stop();
@@ -131,7 +143,7 @@ public class AudioBufferManager extends Thread{
     }
     public void close(){
         started = false;
-        arecord.release();
+        //arecord.release();
     }
     private static Handler uiCallback = new Handler () {
         public void handleMessage (Message msg) {

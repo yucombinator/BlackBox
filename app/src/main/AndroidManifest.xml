@@ -31,6 +31,10 @@
             android:label="@string/title_activity_record"
             android:theme="@style/AppThemeToolbar">
         </activity>
+        <provider
+            android:name="icechen1.com.blackbox.provider.BlackBoxProvider"
+            android:authorities="icechen1.com.blackbox.provider"
+            android:exported="false" />
     </application>
 
 </manifest>
