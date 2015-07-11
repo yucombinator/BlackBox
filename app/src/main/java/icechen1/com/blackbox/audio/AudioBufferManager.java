@@ -12,26 +12,25 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import de.greenrobot.event.EventBus;
+import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
+import icechen1.com.blackbox.messages.AudioBufferMessage;
+import icechen1.com.blackbox.messages.RecordStatusMessage;
 
 public class AudioBufferManager extends Thread{
     private final Context mContext;
 
-    public interface BufferCallBack {
-        void onBufferUpdate(int[] b);
-    }
     static String LOG_TAG = "BlackBox";
     AudioRecord arecord;
     //AudioTrack atrack;
     int sampleRate;
     static int buffersize;
     private boolean started = true;
-    private static BufferCallBack mCallBack;
     int bufferDuration;
 
-    public AudioBufferManager(Context cxt, int time, BufferCallBack callback) {
+    public AudioBufferManager(Context cxt, int time) {
         mContext = cxt;
-        mCallBack = callback;
         bufferDuration=time;
         // Prepare the AudioRecord & AudioTrack
         buffersize = 3584;
@@ -58,15 +57,7 @@ public class AudioBufferManager extends Thread{
         //Set up the recorder and the player
         arecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 sampleRate, AudioFormat.CHANNEL_IN_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT, buffersize * 1);
-        /*int _audioTrackSize = android.media.AudioTrack.getMinBufferSize(
-                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        atrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, _audioTrackSize,
-                AudioTrack.MODE_STREAM);
-        atrack.setPlaybackRate(sampleRate);*/
+                AudioFormat.ENCODING_PCM_16BIT, buffersize * 2);
     }
 /*
     int getAudioSessionID(){
@@ -77,28 +68,24 @@ public class AudioBufferManager extends Thread{
     @Override
     public void run() {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-        //AudioRecord recorder = null;
 
         //Create our buffers
         byte[] buffer  = new byte[buffersize];
         //A circular buffer
-        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * bufferDuration);
+        CircularByteBuffer circBuffer = new CircularByteBuffer(buffersize * bufferDuration);
         arecord.startRecording();
-        //atrack.play();
         int i = 0;
+        //get timestamp
+        long startedTime = System.currentTimeMillis();
         // start recording and playing back
         while(started) {
             try {
                 //Write
                 arecord.read(buffer, 0, buffersize);
                 //Read the byte array data to the circular buffer
-                circBuffer.getOutputStream().write(buffer, 0, buffersize);
-                //Play the byte array content
-                //atrack.write(buffer, 0, buffersize);
-                if(i%2 == 0){ //TODO This should be an option
-                    Message m = new Message();
-                    m.obj  = buffer;
-                    uiCallback.sendMessage(m);
+                int inserted = circBuffer.put(buffer, 0, buffersize);
+                if(i%3 == 0){
+                    EventBus.getDefault().post(new AudioBufferMessage(buffer));
                 }
                 i++;
             } catch (Exception e) {
@@ -113,20 +100,24 @@ public class AudioBufferManager extends Thread{
         }
 
         try {
-            circBuffer.getOutputStream().close();
             AudioFileWriter writer = new AudioFileWriter(null);
+            writer.setupHeader(arecord, circBuffer.length());
 
-            CircularByteBuffer.CircularByteBufferInputStream in = (CircularByteBuffer.CircularByteBufferInputStream) circBuffer.getInputStream();
-            writer.setupHeader(arecord, circBuffer.getAvailable());
+            Log.i(LOG_TAG, "buffer length " + circBuffer.length());
 
-            while(in.read(buffer, 0, buffersize) != -1){
-                writer.write(buffer, buffersize);
-            }
+            byte[] readbuffer = new byte[circBuffer.length()];
+            int retrieved = circBuffer.get(readbuffer, 0, circBuffer.length());
+
+            Log.i(LOG_TAG, "retrieved length " + retrieved);
+
+            writer.write(readbuffer, retrieved);
+
             writer.close();
 
             long currentMillis = System.currentTimeMillis();
+            long actualTime = AppUtils.getBufferSavedTime(startedTime, currentMillis, bufferDuration);
             //save entry to the database
-            DatabaseHelper.saveRecording(mContext, String.valueOf(currentMillis), writer.getPath(), 0, currentMillis);
+            DatabaseHelper.saveRecording(mContext, String.valueOf(currentMillis), writer.getPath(), actualTime, currentMillis);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,37 +128,11 @@ public class AudioBufferManager extends Thread{
 
         arecord.stop();
         arecord.release();
-        //atrack.stop();
 
         Log.i(LOG_TAG, "loopback exit");
     }
-    public void close(){
+    public void close() {
         started = false;
         //arecord.release();
-    }
-    private static Handler uiCallback = new Handler () {
-        public void handleMessage (Message msg) {
-            byte[] bytes = (byte[]) msg.obj;
-            int[] samples = new int[bytes.length/2]; //bytes.length/2
-            //Convert bytes into samples
-            int sampleIndex = 0;
-            for (int t = 0; t < bytes.length;) {
-                int low = (int) bytes[t];
-                t++;
-                int high = (int) bytes[t];
-                t++;
-                int sample = getSixteenBitSample(high, low);
-                samples[sampleIndex] = sample;
-                //Log.i("SpeechJammer", "Got " + samples[sampleIndex]);
-                //toReturn[sampleIndex] = (byte)low;
-                sampleIndex++;
-            }
-
-            mCallBack.onBufferUpdate(samples);
-        }
-    };
-
-    private static int getSixteenBitSample(int high, int low) {
-        return (high << 8) + (low & 0x00ff);
     }
 }

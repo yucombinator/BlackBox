@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_mic_white_18dp"
         fab:rippleColor="@color/accent_dark"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

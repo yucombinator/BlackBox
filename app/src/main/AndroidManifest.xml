@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -26,10 +27,32 @@
             android:exported="true" >
         </service>
 
+        <receiver android:name=".receiver.KickstartReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package"  />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"  />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <data android:scheme="package"  />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activities.RecordActivity"
             android:label="@string/title_activity_record"
-            android:theme="@style/AppThemeToolbar">
+            android:theme="@style/AppThemeCardText"
+            android:launchMode="singleTop">
         </activity>
         <provider
             android:name="icechen1.com.blackbox.provider.BlackBoxProvider"
