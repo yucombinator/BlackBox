@@ -3,11 +3,15 @@ package icechen1.com.blackbox.audio;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -17,6 +21,10 @@ import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
+import icechen1.com.blackbox.messages.RecordingSavedMessage;
+import icechen1.com.blackbox.provider.recording.RecordingContentValues;
+
+import static humanize.Humanize.prettyTimeFormat;
 
 public class AudioBufferManager extends Thread{
     private final Context mContext;
@@ -72,7 +80,7 @@ public class AudioBufferManager extends Thread{
         //Create our buffers
         byte[] buffer  = new byte[buffersize];
         //A circular buffer
-        CircularByteBuffer circBuffer = new CircularByteBuffer(buffersize * bufferDuration);
+        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * bufferDuration);
         arecord.startRecording();
         int i = 0;
         //get timestamp
@@ -117,7 +125,9 @@ public class AudioBufferManager extends Thread{
             long currentMillis = System.currentTimeMillis();
             long actualTime = AppUtils.getBufferSavedTime(startedTime, currentMillis, bufferDuration);
             //save entry to the database
-            DatabaseHelper.saveRecording(mContext, String.valueOf(currentMillis), writer.getPath(), actualTime, currentMillis);
+            RecordingContentValues saved = DatabaseHelper.saveRecording(mContext, "Recorded on " + new SimpleDateFormat("dd MMM").format(new Date(currentMillis)), writer.getPath(), actualTime, currentMillis);
+            EventBus.getDefault().post(new RecordingSavedMessage(saved));
+
 
         } catch (IOException e) {
             e.printStackTrace();

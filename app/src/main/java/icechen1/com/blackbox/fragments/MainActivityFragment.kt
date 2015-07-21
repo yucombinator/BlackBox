@@ -9,9 +9,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.support.design.widget.FloatingActionButton
+import com.melnykov.fab.FloatingActionButton
 import icechen1.com.blackbox.R
-import icechen1.com.blackbox.activities.MainActivity
 import icechen1.com.blackbox.activities.RecordActivity
 import icechen1.com.blackbox.adapter.RecordingAdapter
 import icechen1.com.blackbox.services.AudioRecordService
@@ -24,6 +23,8 @@ public class MainActivityFragment : Fragment() {
     private var mSwipeRefreshLayout: SwipeRefreshLayout? = null;
 
     private var mRecyclerView: RecyclerView? = null;
+
+    private var mAdapter: RecordingAdapter? = null;
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         var view = inflater!!.inflate(R.layout.fragment_list, container, false)
@@ -47,7 +48,7 @@ public class MainActivityFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
         mRecyclerView!!.setHasFixedSize(true)
         val mLayoutManager = setRecyclerViewLayoutManager(mRecyclerView!!)
-        var mAdapter = RecordingAdapter(getActivity());
+        mAdapter = RecordingAdapter(getActivity());
         mRecyclerView!!.setAdapter(mAdapter);
         //mAdapter.setDataSet(list);
 
@@ -57,7 +58,7 @@ public class MainActivityFragment : Fragment() {
             mLayoutManager.scrollToPosition(mScrollPosition)
         }
         val fab = view.findViewById(R.id.fab) as FloatingActionButton
-        //fab.attachToRecyclerView(mRecyclerView)
+        fab.attachToRecyclerView(mRecyclerView)
         fab.setOnClickListener(View.OnClickListener(){
             var recordActivity = Intent(getActivity(),javaClass<RecordActivity>())
             getActivity().startActivity(recordActivity)
@@ -80,5 +81,10 @@ public class MainActivityFragment : Fragment() {
         recyclerView.setLayoutManager(linearLayoutManager)
         recyclerView.scrollToPosition(scrollPosition)
         return linearLayoutManager
+    }
+
+    public override fun onResume(){
+        super.onResume()
+        mAdapter?.notifyDataSetChanged()
     }
 }

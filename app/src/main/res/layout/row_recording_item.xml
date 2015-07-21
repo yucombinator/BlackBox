@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="5dp"
+    >
 
     <TextView
         android:layout_width="wrap_content"
@@ -9,13 +11,45 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Title"
         android:id="@+id/title"
-        android:layout_gravity="center_horizontal" />
+        android:paddingLeft="@dimen/activity_horizontal_margin"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Length"
+        android:drawableLeft="@drawable/ic_av_timer_black_18dp"
+        android:drawableStart="@drawable/ic_av_timer_black_18dp"
+        android:drawablePadding="5dp"
         android:id="@+id/length"
-        android:layout_gravity="center_horizontal" />
-</LinearLayout>
+        android:layout_gravity="center_horizontal"
+        android:layout_alignBaseline="@+id/title"
+        android:layout_alignBottom="@+id/title"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Date"
+        android:drawableLeft="@drawable/ic_event_black_18dp"
+        android:drawableStart="@drawable/ic_event_black_18dp"
+        android:drawablePadding="5dp"
+        android:id="@+id/date"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/title"
+        android:layout_alignRight="@+id/length"
+        android:layout_alignEnd="@+id/length"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+    <View
+        android:layout_marginTop="8dp"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#ffeaeaea"
+        android:layout_below="@+id/date"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

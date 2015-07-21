@@ -17,7 +17,6 @@ public class RecordActivity extends ActionBarActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true); //back
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -33,9 +32,7 @@ public class RecordActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
+        if (id == android.R.id.home) {
             finish();
             return true;
         }

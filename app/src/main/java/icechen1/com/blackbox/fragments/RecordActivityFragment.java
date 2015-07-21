@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.github.jorgecastilloprz.FABProgressCircle;
 
@@ -18,6 +20,8 @@ import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.audio.RecordingSampler;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
+import icechen1.com.blackbox.messages.RecordingSavedMessage;
+import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 import icechen1.com.blackbox.services.AudioRecordService;
 import icechen1.com.blackbox.views.VisualizerView;
 
@@ -31,6 +35,9 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private CardView mListeningCard;
     private CardView mStartListeningCard;
     private VisualizerView mVisualizerView;
+    private CardView mSaveListeningCard;
+    private RadioButton mCheckedRadioButton;
+    private int mTime;
 
     public RecordActivityFragment() {
     }
@@ -61,6 +68,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         //cards
         mListeningCard = (CardView) mRoot.findViewById(R.id.card_listening);
         mStartListeningCard = (CardView) mRoot.findViewById(R.id.card_start_listening);
+        mSaveListeningCard = (CardView) mRoot.findViewById(R.id.card_save_recording);
 
         //visualizer
         mVisualizerView = (VisualizerView) mRoot.findViewById(R.id.visualizer);
@@ -68,7 +76,44 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecordingSampler.setVolumeListener(this);  // for custom implements
         mRecordingSampler.link(mVisualizerView);     // link to visualizer
 
+        // This will get the radiogroup
+        RadioGroup rGroup = (RadioGroup)mRoot.findViewById(R.id.radio_group_time);
+        // This will get the radiobutton in the radiogroup that is checked
+        mCheckedRadioButton = (RadioButton)rGroup.findViewById(rGroup.getCheckedRadioButtonId());
+        getTime(mCheckedRadioButton);
+
+        // This overrides the radiogroup onCheckListener
+        rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
+                // This will get the radiobutton that has changed in its check state
+                mCheckedRadioButton = (RadioButton) rGroup.findViewById(checkedId);
+                // This puts the value (true/false) into the variable
+                boolean isChecked = mCheckedRadioButton.isChecked();
+                // If the radiobutton that has changed in check state is now checked...
+                if (isChecked) {
+                    getTime(mCheckedRadioButton);
+                }
+            }
+        });
+
         return mRoot;
+    }
+
+    private void getTime(View v){
+        switch(v.getId()){
+            case R.id.time_30sec :
+                mTime = 30;
+                break;
+            case R.id.time_1min :
+                mTime = 60;
+                break;
+            case R.id.time_5min :
+                mTime = 5 * 60;
+                break;
+            case R.id.time_10min :
+                mTime = 10 * 60;
+                break;
+        }
     }
 
     private void revealControlPanel(){
@@ -161,6 +206,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private void startRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
         i.putExtra("mode", AudioRecordService.MODE_START);
+        i.putExtra("length", mTime);
         getActivity().startService(i);
         //startRecordingUI();
     }
@@ -213,6 +259,20 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                 mRecordingSampler.process(event.bytes);
             }
         });
+    }
+
+    public void onEvent(final RecordingSavedMessage event) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                addSavedCard(event.obj);
+            }
+        });
+    }
+
+    private void addSavedCard(RecordingContentValues saved) {
+        //first remove any previously existing contentcard
+        //mSaveListeningCard.setVisibility(View.VISIBLE);
     }
 
 }

@@ -14,4 +14,11 @@
     <string name="open_inapp">Open app</string>
     <string name="start_listening">Start listening</string>
     <string name="notif_ready">Ready to start listening.</string>
+    <string name="time_30_seconds">30sec</string>
+    <string name="time_1_minute">1min</string>
+    <string name="time_5_minutes">5mins</string>
+    <string name="time_10_minutes">10mins</string>
+    <string name="search">Search</string>
+    <string name="recent">Recent</string>
+    <string name="favorites">Favorites</string>
 </resources>

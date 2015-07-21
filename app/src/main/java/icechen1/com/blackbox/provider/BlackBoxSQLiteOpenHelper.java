@@ -29,7 +29,7 @@ public class BlackBoxSQLiteOpenHelper extends SQLiteOpenHelper {
             + RecordingColumns.FILENAME + " TEXT DEFAULT 'NoFileName', "
             + RecordingColumns.DURATION + " INTEGER NOT NULL DEFAULT 0, "
             + RecordingColumns.TIMESTAMP + " INTEGER NOT NULL DEFAULT 0 "
-            + ", CONSTRAINT unique_name UNIQUE timestamp ON CONFLICT REPLACE"
+ //           + ", CONSTRAINT unique_name UNIQUE timestamp ON CONFLICT REPLACE"
             + " );";
 
     // @formatter:on

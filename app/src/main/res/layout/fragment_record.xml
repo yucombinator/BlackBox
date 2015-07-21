@@ -1,23 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:animateLayoutChanges="true"
     android:layout_height="match_parent"
-    tools:context="icechen1.com.blackbox.fragments.RecordActivityFragment">
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_save_recording"
-        android:visibility="gone"
-        android:animateLayoutChanges="true"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        card_view:cardCornerRadius="4dp">
-        <include layout="@layout/card_save_recording"/>
-    </android.support.v7.widget.CardView>
+    tools:context="icechen1.com.blackbox.fragments.RecordActivityFragment"
+    android:background="@color/dark_bkg">
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -44,6 +33,21 @@
         <include layout="@layout/card_recording"/>
     </android.support.v7.widget.CardView>
 
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_save_recording"
+        android:visibility="gone"
+        android:animateLayoutChanges="true"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="4dp"
+        android:layout_below="@+id/card_start_listening"
+        android:layout_margin="16dp">
+        <include
+             layout="@layout/card_save_recording"/>
+    </android.support.v7.widget.CardView>
+
     <com.github.jorgecastilloprz.FABProgressCircle
         android:id="@+id/fabProgressCircle"
         android:layout_width="wrap_content"
@@ -66,7 +70,19 @@
             />
 
     </com.github.jorgecastilloprz.FABProgressCircle>
-
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/cancel_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_close_black_24dp"
+        fab:fab_colorNormal="@color/accent"
+        fab:fab_colorPressed="@color/accent"
+        fab:fab_colorRipple="@color/accent_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/control_panel"
+        android:layout_toEndOf="@+id/control_panel"
+        android:layout_margin="10dp"/>
     <RelativeLayout
         android:id="@+id/control_panel"
         android:visibility="gone"

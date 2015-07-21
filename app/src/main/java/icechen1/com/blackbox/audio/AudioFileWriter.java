@@ -27,7 +27,7 @@ public class AudioFileWriter {
         if(url == null){
             url = String.valueOf(date.getTime());
         }
-        final File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/BlackBox/");
+        final File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/");
         dir.mkdirs(); //create folders where write files
         file = new File(dir, url+".wav");
         os = new FileOutputStream(file);

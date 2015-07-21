@@ -21,25 +21,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/name"
-            android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/primary"
-            />
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary"
-            android:id="@+id/editText"
-            android:textColorHint="@color/primary"
-            android:hint="@string/defaut_name"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/buffer_size"
             android:fontFamily="sans-serif-condensed"
-            android:textColor="@color/primary"
+            android:textColor="@color/gray"
             />
+    <RadioGroup
+        android:id="@+id/radio_group_time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton android:id="@+id/time_30sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_30_seconds"
+            style="@style/Base.Theme.AppCompat.Light"
+            />
+        <RadioButton android:id="@+id/time_1min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/time_1_minute"
+            />
+        <RadioButton android:id="@+id/time_5min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_5_minutes"
+            />
+        <RadioButton android:id="@+id/time_10min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_10_minutes"
+            />
+    </RadioGroup>
 </LinearLayout>

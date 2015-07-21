@@ -1,25 +1,21 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeToolbar" parent="Base.Theme.AppCompat">
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="drawerType">@integer/DRAWERTYPE_IMAGE</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
-    <style name="AppTheme" parent="MaterialNavigationDrawerTheme.TranslucentKitKatStatusBar">
-        <!-- Customize your theme here. -->
-        <item name="drawerType">@integer/DRAWERTYPE_IMAGE</item>
-        <item name="colorAccent">@color/accent</item>
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
-        <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
+    <style name="AppThemeNoTitle" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/accent</item>
     </style>
-    <style name="AppThemeCardText" parent="AppThemeToolbar">
+    <style name="AppThemeCardText" parent="AppTheme">
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
     <!-- ToolBar -->
@@ -31,7 +27,7 @@
     </style>
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
-        <item name="color">@color/light</item>
+        <item name="color">@android:color/black</item>
     </style>
 
     <style name="RobotoTextViewStyle" parent="android:Widget.TextView">
@@ -41,5 +37,4 @@
     <style name="RobotoButtonStyle" parent="android:Widget.Holo.Button">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
-
 </resources>

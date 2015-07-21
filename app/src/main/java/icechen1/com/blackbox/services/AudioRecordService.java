@@ -36,16 +36,21 @@ public class AudioRecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        if(intent == null)
+            stopSelf();
+
+        //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         Bundle extras = intent.getExtras();
         if(extras != null){
             mMode = extras.getInt("mode", MODE_START); //in seconds
             mRecordingLength = extras.getInt("length", LENGTH_DEFAULT); //in seconds
         }
         if(mMode == MODE_START){
+            Toast.makeText(this, "Started Listening", Toast.LENGTH_SHORT).show();
             startRecording();
         }
         else if (mMode == MODE_STOP){
+            Toast.makeText(this, "Stopped Listening", Toast.LENGTH_SHORT).show();
             stopRecording();
         }else if(mMode == MODE_SET_PASSIVE_NOTIF){
             setUpPassiveNotification();
