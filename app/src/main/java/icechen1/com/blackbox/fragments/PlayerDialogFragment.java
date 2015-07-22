@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,9 @@ public class PlayerDialogFragment extends BaseDialogFragment {
     }
 
     public static void show(FragmentActivity activity, RecordingCursor mResults, int item) {
-        new PlayerDialogFragment().setItem(mResults,item).show(activity.getSupportFragmentManager(), "PlayerDialogFragment");
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
+        new PlayerDialogFragment().setItem(mResults,item).show(ft, "PlayerDialogFragment");
     }
 
     public PlayerDialogFragment setItem(RecordingCursor mResults, int item){
@@ -58,6 +61,13 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         setUpAudioControls();
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        getDialog().setCanceledOnTouchOutside(false);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
 
     @Override
     public BaseDialogFragment.Builder build(BaseDialogFragment.Builder builder) {
@@ -72,7 +82,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
                 dismiss();
             }
         });
-        setCancelable(false);
+        setCancelable(true);
         return builder;
     }
 

@@ -12,6 +12,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.github.jorgecastilloprz.FABProgressCircle;
 
@@ -24,6 +25,8 @@ import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 import icechen1.com.blackbox.services.AudioRecordService;
 import icechen1.com.blackbox.views.VisualizerView;
+
+import static humanize.Humanize.duration;
 
 public class RecordActivityFragment extends Fragment implements RecordingSampler.CalculateVolumeListener {
 
@@ -38,6 +41,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private CardView mSaveListeningCard;
     private RadioButton mCheckedRadioButton;
     private int mTime;
+    private TextView mDuration;
 
     public RecordActivityFragment() {
     }
@@ -69,6 +73,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mListeningCard = (CardView) mRoot.findViewById(R.id.card_listening);
         mStartListeningCard = (CardView) mRoot.findViewById(R.id.card_start_listening);
         mSaveListeningCard = (CardView) mRoot.findViewById(R.id.card_save_recording);
+        mDuration = (TextView) mRoot.findViewById(R.id.duration);
 
         //visualizer
         mVisualizerView = (VisualizerView) mRoot.findViewById(R.id.visualizer);
@@ -134,6 +139,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         anim.start();
         mFab.bringToFront();
         mFab.show();
+        mDuration.setText(duration(mTime));
 
     }
 

@@ -82,6 +82,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/control_panel"
         android:layout_toEndOf="@+id/control_panel"
+        android:visibility="gone"
         android:layout_margin="10dp"/>
     <RelativeLayout
         android:id="@+id/control_panel"
