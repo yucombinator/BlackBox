@@ -1,11 +1,16 @@
 package icechen1.com.blackbox.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.fragments.PlayerDialogFragment;
 import icechen1.com.blackbox.provider.recording.RecordingCursor;
 import icechen1.com.blackbox.provider.recording.RecordingSelection;
 
@@ -39,11 +44,11 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private final Context mContext;
+    private final FragmentActivity mContext;
     private final RecordingCursor mResults;
 
 
-    public RecordingAdapter(Context c){
+    public RecordingAdapter(FragmentActivity c){
         mContext = c;
 
         RecordingSelection where = new RecordingSelection();
@@ -53,17 +58,33 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_recording_item, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_recording_item, parent, false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    ((RippleDrawable) view.getBackground()).setHotspot(event.getX(), event.getY());
+                    return false;
+
+                }
+            });
+        }
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (mResults.moveToPosition(position)) {
-            ViewHolder vh = (ViewHolder) holder;
+            final ViewHolder vh = (ViewHolder) holder;
             vh.mTitle.setText(mResults.getName());
             vh.mLength.setText(String.valueOf(duration(mResults.getDuration() / 1000)));
             vh.mDate.setText(String.valueOf(naturalTime(new Date(mResults.getTimestamp()))));
+            vh.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PlayerDialogFragment.show(mContext, mResults, position);
+                }
+            });
         }
     }
 
