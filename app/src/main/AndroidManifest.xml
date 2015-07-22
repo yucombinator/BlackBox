@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -27,37 +27,47 @@
             android:exported="true" >
         </service>
 
-        <receiver android:name=".receiver.KickstartReceiver">
+        <receiver android:name=".receiver.KickstartReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <data android:scheme="package"  />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+
+                <data android:scheme="package" />
             </intent-filter>
-
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <data android:scheme="package"  />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
             </intent-filter>
-
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <data android:scheme="package"  />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+
+                <data android:scheme="package" />
             </intent-filter>
         </receiver>
 
         <activity
             android:name=".activities.RecordActivity"
             android:label="@string/title_activity_record"
-            android:theme="@style/AppThemeCardText"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppThemeCardText" >
         </activity>
+
         <provider
-            android:name="icechen1.com.blackbox.provider.BlackBoxProvider"
+            android:name=".provider.BlackBoxProvider"
             android:authorities="icechen1.com.blackbox.provider"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.PlayerActivity"
+            android:label="@string/title_activity_player"
+            android:parentActivityName=".activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="icechen1.com.blackbox.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

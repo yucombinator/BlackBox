@@ -6,17 +6,17 @@
     tools:context=".MainActivityFragment"
     android:background="@color/white">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <com.malinskiy.superrecyclerview.SuperRecyclerView
+        android:id="@+id/recyclerView"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        app:layout_empty="@layout/empty_view"
+        app:layout_moreProgress="@layout/load_progress"
+        app:mainLayoutId="@layout/layout_recyclerview_verticalscroll"
+        app:recyclerClipToPadding="false"
+        app:recyclerPadding="4dp"
+        app:scrollbarStyle="insideInset"/>
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"

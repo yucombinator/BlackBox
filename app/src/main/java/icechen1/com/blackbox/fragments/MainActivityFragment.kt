@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.malinskiy.superrecyclerview.SuperRecyclerView
 import com.melnykov.fab.FloatingActionButton
 import icechen1.com.blackbox.R
 import icechen1.com.blackbox.activities.RecordActivity
@@ -20,9 +21,8 @@ import icechen1.com.blackbox.services.AudioRecordService
  */
 public class MainActivityFragment : Fragment() {
 
-    private var mSwipeRefreshLayout: SwipeRefreshLayout? = null;
 
-    private var mRecyclerView: RecyclerView? = null;
+    private var mRecyclerView: SuperRecyclerView? = null;
 
     private var mAdapter: RecordingAdapter? = null;
 
@@ -38,16 +38,10 @@ public class MainActivityFragment : Fragment() {
         } else {
             //list = new ArrayList<>();
         }
-        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout) as SwipeRefreshLayout
-        mSwipeRefreshLayout!!.setColorSchemeResources(R.color.primary, R.color.primary_dark, R.color.accent)
-        mSwipeRefreshLayout!!.setOnRefreshListener(object : SwipeRefreshLayout.OnRefreshListener {
-            override fun onRefresh() {
-                //refreshContent();
-            }
-        })
-        mRecyclerView = view.findViewById(R.id.recyclerView) as RecyclerView
-        mRecyclerView!!.setHasFixedSize(true)
-        val mLayoutManager = setRecyclerViewLayoutManager(mRecyclerView!!)
+
+        mRecyclerView = view.findViewById(R.id.recyclerView) as SuperRecyclerView
+        mRecyclerView!!.getRecyclerView().setHasFixedSize(true)
+        val mLayoutManager = setRecyclerViewLayoutManager(mRecyclerView!!.getRecyclerView())
         mAdapter = RecordingAdapter(getActivity());
         mRecyclerView!!.setAdapter(mAdapter);
         //mAdapter.setDataSet(list);
@@ -58,7 +52,7 @@ public class MainActivityFragment : Fragment() {
             mLayoutManager.scrollToPosition(mScrollPosition)
         }
         val fab = view.findViewById(R.id.fab) as FloatingActionButton
-        fab.attachToRecyclerView(mRecyclerView)
+        fab.attachToRecyclerView(mRecyclerView!!.getRecyclerView())
         fab.setOnClickListener(View.OnClickListener(){
             var recordActivity = Intent(getActivity(),javaClass<RecordActivity>())
             getActivity().startActivity(recordActivity)

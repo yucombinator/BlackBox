@@ -13,6 +13,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
+import com.tonicartos.superslim.GridSLM;
+import com.tonicartos.superslim.LinearSLM;
+
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +62,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (mResults.moveToPosition(position)) {
             ViewHolder vh = (ViewHolder) holder;
             vh.mTitle.setText(mResults.getName());
-            vh.mLength.setText(String.valueOf(duration(mResults.getDuration()/1000)));
+            vh.mLength.setText(String.valueOf(duration(mResults.getDuration() / 1000)));
             vh.mDate.setText(String.valueOf(naturalTime(new Date(mResults.getTimestamp()))));
         }
     }

@@ -13,7 +13,7 @@
     <style name="AppThemeNoTitle" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/accent</item>
+        <item name="android:windowBackground">@color/primary</item>
     </style>
     <style name="AppThemeCardText" parent="AppTheme">
         <item name="android:textColor">@android:color/darker_gray</item>

@@ -21,4 +21,6 @@
     <string name="search">Search</string>
     <string name="recent">Recent</string>
     <string name="favorites">Favorites</string>
+    <string name="title_activity_player">PlayerActivity</string>
+    <string name="none">Nothing here :(</string>
 </resources>
