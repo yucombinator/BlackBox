@@ -79,6 +79,7 @@ public class MainActivityFragment : Fragment() {
 
     public override fun onResume(){
         super.onResume()
+        mAdapter?.refreshCursor()
         mAdapter?.notifyDataSetChanged()
     }
 }

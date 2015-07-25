@@ -89,4 +89,9 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
         return new ViewHolder(view);
     }
 
+
+    public void refreshCursor() {
+        changeCursor(new RecordingSelection().query(mContext.getContentResolver()));
+    }
+
 }
