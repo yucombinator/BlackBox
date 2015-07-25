@@ -1,6 +1,7 @@
 package icechen1.com.blackbox.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.common.CursorRecyclerViewAdapter;
 import icechen1.com.blackbox.fragments.PlayerDialogFragment;
 import icechen1.com.blackbox.provider.recording.RecordingCursor;
 import icechen1.com.blackbox.provider.recording.RecordingSelection;
@@ -27,7 +29,9 @@ import java.util.List;
 import static humanize.Humanize.duration;
 import static humanize.Humanize.naturalTime;
 
-public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder, RecordingCursor> {
+
+    private final FragmentActivity mContext;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -44,16 +48,29 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private final FragmentActivity mContext;
-    private final RecordingCursor mResults;
-
 
     public RecordingAdapter(FragmentActivity c){
-        mContext = c;
+        this(c, new RecordingSelection().query(c.getContentResolver()));
+    }
 
-        RecordingSelection where = new RecordingSelection();
-        mResults = where.query(mContext.getContentResolver());
-        Log.d("icechen1", "count: " + mResults.getCount());
+    public RecordingAdapter(FragmentActivity context,RecordingCursor cursor){
+        super(context, cursor);
+        mContext = context;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final RecordingCursor cursor) {
+        final ViewHolder vh = (ViewHolder) holder;
+        final int position = cursor.getPosition();
+        vh.mTitle.setText(cursor.getName());
+        vh.mLength.setText(String.valueOf(duration(cursor.getDuration() / 1000)));
+        vh.mDate.setText(String.valueOf(naturalTime(new Date(cursor.getTimestamp()))));
+        vh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayerDialogFragment.show(mContext, cursor, position);
+            }
+        });
     }
 
     @Override
@@ -70,30 +87,6 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             });
         }
         return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        if (mResults.moveToPosition(position)) {
-            final ViewHolder vh = (ViewHolder) holder;
-            vh.mTitle.setText(mResults.getName());
-            vh.mLength.setText(String.valueOf(duration(mResults.getDuration() / 1000)));
-            vh.mDate.setText(String.valueOf(naturalTime(new Date(mResults.getTimestamp()))));
-            vh.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PlayerDialogFragment.show(mContext, mResults, position);
-                }
-            });
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        if (mResults != null) {
-            return mResults.getCount();
-        }
-        return 0;
     }
 
 }

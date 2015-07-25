@@ -81,7 +81,7 @@ public class AudioBufferManager extends Thread{
         //Create our buffers
         byte[] buffer  = new byte[buffersize];
         //A circular buffer
-        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * bufferDuration);
+        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * bufferDuration * 2);  //2 is a magic number
         arecord.startRecording();
         int i = 0;
         //get timestamp
