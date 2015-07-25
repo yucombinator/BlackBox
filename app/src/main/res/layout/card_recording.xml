@@ -26,7 +26,7 @@
         android:text="@string/buffer_size"
         android:fontFamily="sans-serif-condensed"
         android:layout_gravity="center_horizontal"
-        android:padding="10dp"
+        android:padding="5dp"
         android:textColor="@color/gray"/>
     <TextView
         android:layout_width="wrap_content"
@@ -36,6 +36,17 @@
         android:text="1mins"
         android:fontFamily="sans-serif-condensed"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="10dp"
+        android:paddingBottom="5dp"
         android:textColor="@color/accent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/message"
+        android:text="@string/recording_msg"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="10dp"
+        android:textColor="@color/gray"/>
 </LinearLayout>
