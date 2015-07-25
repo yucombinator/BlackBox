@@ -45,7 +45,8 @@ public class AudioBufferManager extends Thread{
         try {
             //Find the best supported sample rate
             for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {  // add the rates you wish to check against
-                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_STEREO , AudioFormat.ENCODING_PCM_16BIT);
+                //TODO Stereo support requires changing some buffer sizes
+                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO , AudioFormat.ENCODING_PCM_16BIT);
                 if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
                     // buffer size is valid, Sample rate supported
                     sampleRate = rate;
@@ -64,7 +65,7 @@ public class AudioBufferManager extends Thread{
         }
         //Set up the recorder and the player
         arecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                sampleRate, AudioFormat.CHANNEL_IN_STEREO,
+                sampleRate, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, buffersize * 2);
     }
 /*

@@ -18,6 +18,8 @@ package icechen1.com.blackbox.audio;
  */
 
 
+import android.util.Log;
+
 import java.io.EOFException;
 import java.nio.BufferOverflowException;
 
@@ -161,6 +163,7 @@ abstract public class CustomByteBuffer
         }
         catch ( BufferOverflowException e )
         {
+            Log.d("CustomByteBuffer", "BufferOverflowException");
             // nothing to do.
         }
         return count;
