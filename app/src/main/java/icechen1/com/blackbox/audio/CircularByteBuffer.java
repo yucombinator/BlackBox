@@ -66,10 +66,9 @@ public class CircularByteBuffer extends CustomByteBuffer
     @Override
     public void put( byte b ) throws BufferOverflowException
     {
-        if (isFull())
-            throw new BufferOverflowException();
-
-        length++;
+        if (!isFull()){
+            length++;
+        }
         buf[nextPut++] = b;
         if (nextPut >= size)
             nextPut = 0;
