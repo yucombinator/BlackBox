@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         cultView.getInnerToolbar().setBackgroundColor(getResources().getColor(R.color.primary_dark));
         cultView.getInnerToolbar().setTitleTextColor(getResources().getColor(android.R.color.black));
         cultView.getInnerToolbar().setBackgroundColor(getResources().getColor(R.color.white));
+        cultView.getOutToolbar().setBackgroundColor(getResources().getColor(R.color.primary));
         //cultView.setOutContentLayout(R.layout.fragment_list);
     }
 

@@ -35,4 +35,9 @@ public interface RecordingModel extends BaseModel {
      * Timestamp of the recording
      */
     long getTimestamp();
+
+    /**
+     * Is Favorite?
+     */
+    Boolean getFavorite();
 }

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import icechen1.com.blackbox.BuildConfig;
+import icechen1.com.blackbox.provider.recording.RecordingColumns;
 
 /**
  * Implement your custom database creation or upgrade code here.
@@ -33,5 +34,9 @@ public class BlackBoxSQLiteOpenHelperCallbacks {
     public void onUpgrade(final Context context, final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (BuildConfig.DEBUG) Log.d(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         // Insert your upgrading code here.
+        if(oldVersion == 1 && newVersion == 2){
+            db.execSQL("ALTER TABLE "+ RecordingColumns.TABLE_NAME + "\n ADD " +
+                    RecordingColumns.FAVORITE + " BOOLEAN NOT NULL DEFAULT false");
+        }
     }
 }

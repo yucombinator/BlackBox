@@ -171,4 +171,8 @@ public class RecordingSelection extends AbstractSelection<RecordingSelection> {
         addLessThanOrEquals(RecordingColumns.TIMESTAMP, value);
         return this;
     }
+    public RecordingSelection favorite(Boolean... value) {
+        addEquals(RecordingColumns.FAVORITE, value);
+        return this;
+    }
 }

@@ -71,4 +71,12 @@ public class RecordingContentValues extends AbstractContentValues {
         return this;
     }
 
+    /**
+     * Timestamp of the recording
+     */
+    public RecordingContentValues putFavorite(boolean value) {
+        mContentValues.put(RecordingColumns.FAVORITE, value);
+        return this;
+    }
+
 }

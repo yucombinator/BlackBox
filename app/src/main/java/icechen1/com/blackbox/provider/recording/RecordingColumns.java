@@ -39,6 +39,9 @@ public class RecordingColumns implements BaseColumns {
     public static final String TIMESTAMP = "timestamp";
 
 
+    public static final String FAVORITE = "favorite";
+
+
     public static final String DEFAULT_ORDER = TABLE_NAME + "." +_ID;
 
     // @formatter:off
@@ -47,7 +50,8 @@ public class RecordingColumns implements BaseColumns {
             NAME,
             FILENAME,
             DURATION,
-            TIMESTAMP
+            TIMESTAMP,
+            FAVORITE
     };
     // @formatter:on
 
@@ -58,6 +62,7 @@ public class RecordingColumns implements BaseColumns {
             if (c.equals(FILENAME) || c.contains("." + FILENAME)) return true;
             if (c.equals(DURATION) || c.contains("." + DURATION)) return true;
             if (c.equals(TIMESTAMP) || c.contains("." + TIMESTAMP)) return true;
+            if (c.equals(FAVORITE) || c.contains("." + FAVORITE)) return true;
         }
         return false;
     }

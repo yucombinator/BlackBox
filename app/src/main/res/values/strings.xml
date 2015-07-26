@@ -25,4 +25,5 @@
     <string name="none">Nothing here :(</string>
     <string name="close">Close</string>
     <string name="recording_msg">Rewind will keep listening in the background.</string>
+    <string name="settings">Settings</string>
 </resources>

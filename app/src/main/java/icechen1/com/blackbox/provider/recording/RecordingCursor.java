@@ -1,9 +1,6 @@
 package icechen1.com.blackbox.provider.recording;
 
-import java.util.Date;
-
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import icechen1.com.blackbox.provider.base.AbstractCursor;
@@ -63,6 +60,16 @@ public class RecordingCursor extends AbstractCursor implements RecordingModel {
         Long res = getLongOrNull(RecordingColumns.TIMESTAMP);
         if (res == null)
             throw new NullPointerException("The value of 'timestamp' in the database was null, which is not allowed according to the model definition");
+        return res;
+    }
+
+    /**
+     * IsFavotite?
+     */
+    public Boolean getFavorite() {
+        Boolean res = getBooleanOrNull(RecordingColumns.FAVORITE);
+        if (res == null)
+            throw new NullPointerException("The value of 'favorite' in the database was null, which is not allowed according to the model definition");
         return res;
     }
 }
