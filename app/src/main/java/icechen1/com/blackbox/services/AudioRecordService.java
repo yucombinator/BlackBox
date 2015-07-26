@@ -36,8 +36,10 @@ public class AudioRecordService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId){
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if(intent == null)
+        if(intent == null) {
             stopSelf();
+            return Service.START_NOT_STICKY;
+        }
 
         //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         Bundle extras = intent.getExtras();
