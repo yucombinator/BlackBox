@@ -101,10 +101,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeViewPager() {
+        Bundle args = new Bundle();
+        args.putBoolean("favorite", true);
         adapter = new FragmentPagerItemAdapter(
                 getSupportFragmentManager(), FragmentPagerItems.with(this)
                 .add(R.string.recent, MainActivityFragment.class)
-                .add(R.string.favorites, MainActivityFragment.class)
+                .add(R.string.favorites, MainActivityFragment.class,args)
                 .create());
         if (viewPager == null || smartTabLayout == null) {
             return;

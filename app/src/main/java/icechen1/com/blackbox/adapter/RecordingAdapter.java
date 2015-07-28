@@ -32,6 +32,7 @@ import static humanize.Humanize.naturalTime;
 public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder, RecordingCursor> {
 
     private final FragmentActivity mContext;
+    private boolean mIsFavorite;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -50,7 +51,8 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
 
 
     public RecordingAdapter(FragmentActivity c, boolean isFavorite){
-        this(c, isFavorite? new RecordingSelection().favorite(true).query(c.getContentResolver()): new RecordingSelection().query(c.getContentResolver()));
+        this(c, isFavorite ? new RecordingSelection().favorite(true).query(c.getContentResolver()) : new RecordingSelection().query(c.getContentResolver()));
+        mIsFavorite = isFavorite;
     }
 
     public RecordingAdapter(FragmentActivity context,RecordingCursor cursor){
@@ -91,7 +93,10 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
 
 
     public void refreshCursor() {
-        changeCursor(new RecordingSelection().query(mContext.getContentResolver()));
+        if(mIsFavorite)
+            changeCursor(new RecordingSelection().favorite(true).query(mContext.getContentResolver()));
+        else
+            changeCursor(new RecordingSelection().query(mContext.getContentResolver()));
     }
 
 }
