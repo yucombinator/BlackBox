@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/menu_group_1">
+        <item
+            android:id="@+id/menu_list"
+            android:icon="@drawable/ic_view_list_black_18dp"
+            android:title="@string/list" />
+        <item
+            android:id="@+id/menu_record"
+            android:icon="@drawable/ic_mic_black_18dp"
+            android:title="@string/new_recording" />
+    </group>
+    <group android:id="@+id/menu_group_2">
+        <item
+            android:id="@+id/menu_settings"
+            android:icon="@drawable/ic_settings_black_18dp"
+            android:title="@string/settings" />
+    </group>
+</menu>

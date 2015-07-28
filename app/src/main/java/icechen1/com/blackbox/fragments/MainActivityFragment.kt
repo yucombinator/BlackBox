@@ -26,7 +26,18 @@ public class MainActivityFragment : Fragment() {
 
     private var mAdapter: RecordingAdapter? = null;
 
+    fun newInstance(favorite: Boolean?): MainActivityFragment{
+        var f =  MainActivityFragment()
+        var args = Bundle()
+        args.putBoolean("favorite", favorite!!);
+        f.setArguments(args);
+        return f
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        var args = getArguments();
+        var isFavorite = args.getBoolean("favorite", false);
+
         var view = inflater!!.inflate(R.layout.fragment_list, container, false)
 
         var mScrollPosition = 0
@@ -42,7 +53,7 @@ public class MainActivityFragment : Fragment() {
         mRecyclerView = view.findViewById(R.id.recyclerView) as SuperRecyclerView
         mRecyclerView!!.getRecyclerView().setHasFixedSize(true)
         val mLayoutManager = setRecyclerViewLayoutManager(mRecyclerView!!.getRecyclerView())
-        mAdapter = RecordingAdapter(getActivity());
+        mAdapter = RecordingAdapter(getActivity(), isFavorite);
         mRecyclerView!!.setAdapter(mAdapter);
         //mAdapter.setDataSet(list);
 
