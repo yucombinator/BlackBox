@@ -73,7 +73,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView3"
+            android:id="@+id/set_fav_btn"
             android:src="@drawable/ic_favorite_black_36dp"
             android:layout_alignTop="@+id/imageView4"
             android:layout_toRightOf="@+id/imageView4"
@@ -82,7 +82,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/imageView4"
+            android:id="@+id/unset_fav_btn"
             android:src="@drawable/ic_favorite_outline_black_36dp"
             android:layout_alignTop="@+id/play"
             android:layout_toRightOf="@+id/play"

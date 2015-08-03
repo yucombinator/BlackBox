@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 22
@@ -18,9 +17,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
 }
 repositories {
     maven {
@@ -30,14 +26,12 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'org.jetbrains.kotlin:kotlin-stdlib:+'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'com.android.support:recyclerview-v7:21.0.+'
-    compile 'com.android.support:cardview-v7:21.0.+'
+    compile 'com.android.support:recyclerview-v7:22.2.+'
+    compile 'com.android.support:cardview-v7:22.2.+'
     compile 'com.tyorikan:voice-recording-visualizer:1.0.3@aar'
     compile 'com.github.mfornos:humanize-slim:1.2.2'
     compile 'com.github.ppamorim:cult:0.1.5'
@@ -50,12 +44,8 @@ dependencies {
     compile 'net.the4thdimension:audio-wife:1.0.3'
 }
 buildscript {
-    ext.kotlin_version = '0.11.91.2'
     repositories {
         mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 repositories {

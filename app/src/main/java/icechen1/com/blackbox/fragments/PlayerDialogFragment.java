@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.avast.android.dialogs.core.BaseDialogFragment;
 import java.io.File;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.provider.recording.RecordingCursor;
 import nl.changer.audiowife.AudioWife;
 
@@ -35,6 +37,10 @@ public class PlayerDialogFragment extends BaseDialogFragment {
     private TextView mTotalTime;
     private View mPlayMedia;
     private View mPauseMedia;
+    private RecordingCursor mCursor;
+    private int mItem;
+    private ImageView mSetFavoriteBtn;
+    private ImageView mUnSetFavoriteBtn;
 
     public PlayerDialogFragment() {
     }
@@ -51,6 +57,10 @@ public class PlayerDialogFragment extends BaseDialogFragment {
             path = mResults.getFilename();
             timestamp = mResults.getTimestamp();
             duration = mResults.getDuration();
+
+            //save the cursor and item
+            mCursor = mResults;
+            mItem = item;
         }
         return this;
     }
@@ -59,6 +69,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
     public void onShow(DialogInterface i){
         super.onShow(i);
         setUpAudioControls();
+        setUpFavoriteState();
     }
 
     @Override
@@ -68,10 +79,45 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    void setUpFavoriteState(){
+        boolean isFavorite = false;
+        mCursor.moveToPosition(mItem);
+        isFavorite = mCursor.getFavorite();
+
+        if(isFavorite){
+            mUnSetFavoriteBtn.setVisibility(View.VISIBLE);
+            mSetFavoriteBtn.setVisibility(View.GONE);
+        }else{
+            mSetFavoriteBtn.setVisibility(View.VISIBLE);
+            mUnSetFavoriteBtn.setVisibility(View.GONE);
+        }
+
+        mSetFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), true);
+                mUnSetFavoriteBtn.setVisibility(View.VISIBLE);
+                mSetFavoriteBtn.setVisibility(View.GONE);
+            }
+        });
+
+        mUnSetFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), true);
+                mSetFavoriteBtn.setVisibility(View.VISIBLE);
+                mUnSetFavoriteBtn.setVisibility(View.GONE);
+            }
+        });
+    }
 
     @Override
     public BaseDialogFragment.Builder build(BaseDialogFragment.Builder builder) {
         mRoot = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_player, null);
+
+        mUnSetFavoriteBtn = (ImageView) mRoot.findViewById(R.id.unset_fav_btn);
+        mSetFavoriteBtn = (ImageView) mRoot.findViewById(R.id.set_fav_btn);
+
         builder.setTitle(name);
         builder.setView(mRoot);
         builder.setPositiveButton(getString(R.string.close), new View.OnClickListener() {

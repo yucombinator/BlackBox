@@ -1,8 +1,10 @@
 package icechen1.com.blackbox.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -12,9 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 
 import com.github.ppamorim.cult.CultView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
@@ -33,7 +33,7 @@ import icechen1.com.blackbox.views.SearchView;
  * @author Pedro Paulo Amorim
  *
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentPagerItemAdapter adapter;
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
+    private NavigationView mNavigationMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_left);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         smartTabLayout = (SmartTabLayout) findViewById(R.id.smart_tab_layout);
+
+        mNavigationMenu = (NavigationView) findViewById(R.id.vNavigation);
+        mNavigationMenu.setNavigationItemSelectedListener(this);
 
     }
 
@@ -171,6 +175,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
+        switch(menuItem.getItemId()){
+            case R.id.menu_list:
+                return true;
+            case R.id.menu_record:
+                Intent record = new Intent(this, RecordActivity.class);
+                startActivity(record);
+                return true;
+            case R.id.menu_settings:
+                return true;
+        }
+        return false;
     }
 }
 

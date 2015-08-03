@@ -17,4 +17,10 @@ public class DatabaseHelper {
         cxt.getContentResolver().insert(RecordingColumns.CONTENT_URI, values.values());
         return values;
     }
+
+    public static void editFavoriteforId(Context cxt, long id, boolean state){
+        RecordingContentValues values = new RecordingContentValues();
+        values.putFavorite(state);
+        cxt.getContentResolver().update(RecordingColumns.CONTENT_URI, values.values(), RecordingColumns._ID + " = " + id, null);
+    }
 }
