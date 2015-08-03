@@ -1,6 +1,7 @@
 package icechen1.com.blackbox.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;

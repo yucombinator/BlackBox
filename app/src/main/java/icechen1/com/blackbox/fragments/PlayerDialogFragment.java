@@ -17,6 +17,7 @@ import com.avast.android.dialogs.core.BaseDialogFragment;
 import java.io.File;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.activities.MainActivity;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.provider.recording.RecordingCursor;
 import nl.changer.audiowife.AudioWife;
@@ -26,6 +27,11 @@ import nl.changer.audiowife.AudioWife;
  * A placeholder fragment containing a simple view.
  */
 public class PlayerDialogFragment extends BaseDialogFragment {
+
+    private DialogInterface.OnDismissListener onDismissListener;
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
 
     private String name;
     private String path;
@@ -104,12 +110,13 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         mUnSetFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), true);
+                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), false);
                 mSetFavoriteBtn.setVisibility(View.VISIBLE);
                 mUnSetFavoriteBtn.setVisibility(View.GONE);
             }
         });
     }
+
 
     @Override
     public BaseDialogFragment.Builder build(BaseDialogFragment.Builder builder) {
@@ -151,5 +158,13 @@ public class PlayerDialogFragment extends BaseDialogFragment {
 
         // to explicitly pause
         AudioWife.getInstance().pause();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener != null) {
+            onDismissListener.onDismiss(dialog);
+        }
     }
 }
