@@ -10,18 +10,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.github.ppamorim.cult.CultView;
+import com.malinskiy.superrecyclerview.SuperRecyclerView;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.adapter.RecordingAdapter;
 import icechen1.com.blackbox.common.NavigationDrawerUtil;
 import icechen1.com.blackbox.fragments.MainActivityFragment;
 import icechen1.com.blackbox.views.SearchView;
@@ -152,7 +159,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cultView.getInnerToolbar().setTitleTextColor(getResources().getColor(android.R.color.black));
         cultView.getInnerToolbar().setBackgroundColor(getResources().getColor(R.color.white));
         cultView.getOutToolbar().setBackgroundColor(getResources().getColor(R.color.primary));
-        //cultView.setOutContentLayout(R.layout.fragment_list);
+        cultView.setOutContentLayout(R.layout.fragment_search_list);
+
+
+        SuperRecyclerView searchRecyclerView = ((SuperRecyclerView) findViewById(R.id.searchRecyclerView));
+
+        setRecyclerViewLayoutManager(searchRecyclerView.getRecyclerView());
+        final RecordingAdapter adapter = new RecordingAdapter(this, false);
+        searchRecyclerView.setAdapter(adapter);
+
+        ((EditText)findViewById(R.id.search_edit_text)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                adapter.getFilter().filter(editable.toString());
+            }
+        });
+    }
+
+    /**
+     * Set RecyclerView's LayoutManager
+     */
+    public LinearLayoutManager setRecyclerViewLayoutManager(RecyclerView recyclerView){
+        int scrollPosition = 0;
+
+        // If a layout manager has already been set, get current scroll position.
+        if (recyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager)recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+        }
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.scrollToPosition(scrollPosition);
+        return linearLayoutManager;
     }
 
     private SearchView.SearchViewCallback searchViewCallback =

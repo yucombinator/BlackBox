@@ -19,6 +19,8 @@ import icechen1.com.blackbox.provider.recording.RecordingSelection;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.tonicartos.superslim.GridSLM;
@@ -30,7 +32,7 @@ import java.util.List;
 import static humanize.Humanize.duration;
 import static humanize.Humanize.naturalTime;
 
-public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder, RecordingCursor> {
+public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.ViewHolder, RecordingCursor> implements Filterable {
 
     private final FragmentActivity mContext;
     private boolean mIsFavorite;
@@ -98,6 +100,33 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
             changeCursor(new RecordingSelection().favorite(true).query(mContext.getContentResolver()));
         else
             changeCursor(new RecordingSelection().query(mContext.getContentResolver()));
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new CursorFilter();
+    }
+
+    class CursorFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            //Here you have to implement filtering way
+            final FilterResults results = new FilterResults();
+
+            RecordingCursor cursor = new RecordingSelection().nameContains(constraint.toString()).query(mContext.getContentResolver());
+            //logic to filtering
+            results.count = cursor.getCount();
+            results.values = cursor;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            // here you can use result - (f.e. set in in adapter list)
+            RecordingAdapter.this.swapCursor((RecordingCursor) results.values);
+        }
     }
 
 }
