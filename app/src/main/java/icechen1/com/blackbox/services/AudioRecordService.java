@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
@@ -18,10 +19,11 @@ import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
 
+
 /**
  * Created by yuchen.hou on 15-06-27.
  */
-public class AudioRecordService extends Service {
+public class AudioRecordService extends Service implements AudioBufferManager.OnAudioRecordStateUpdate {
     private static final int LENGTH_DEFAULT = 60;
     public static final int MODE_START = 1;
     public static final int MODE_STOP = 2;
@@ -68,7 +70,7 @@ public class AudioRecordService extends Service {
 
     private void startRecording(){
 
-        mAudio = new AudioBufferManager(this, mRecordingLength);
+        mAudio = AudioBufferManager.getInstance(this, mRecordingLength, this);
         mAudio.start();
         startForeground(1995, buildNotification());
         mNotificationManager.cancel(1996); //remove passive notif
@@ -81,8 +83,6 @@ public class AudioRecordService extends Service {
         //set up notif
         setUpPassiveNotification();
         mAudio.close();
-        stopForeground(true);
-        stopSelf();
     }
 
     @Override
@@ -136,5 +136,18 @@ public class AudioRecordService extends Service {
                 .setPriority(Notification.PRIORITY_MIN)
                 .build();
         mNotificationManager.notify(1996,notif);
+    }
+
+    @Override
+    public void onRecordingSaved() {
+        stopForeground(true);
+        stopSelf();
+    }
+
+    @Override
+    public void onRecordingError(Exception e) {
+        Log.e("Rewind", "Error", e);
+        stopForeground(true);
+        stopSelf();
     }
 }

@@ -3,6 +3,9 @@ package icechen1.com.blackbox.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -15,9 +18,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.github.jorgecastilloprz.FABProgressCircle;
+import com.nineoldandroids.animation.ValueAnimator;
 
 import de.greenrobot.event.EventBus;
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.activities.RecordActivity;
+import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.audio.RecordingSampler;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
@@ -100,6 +106,17 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                 }
             }
         });
+
+        if(AudioBufferManager.getInstanceIfExisting() != null){
+            mTime = AudioBufferManager.getInstanceIfExisting().getDuration();
+            tintSystemBarsForStartRecord();
+            mCtlPanel.setVisibility(View.VISIBLE);
+            mStartListeningCard.setVisibility(View.GONE);
+            mListeningCard.setVisibility(View.VISIBLE);
+            mFab.bringToFront();
+            //mFab.show();
+            mRecording = true;
+        }
 
         return mRoot;
     }
@@ -226,6 +243,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void stopRecordingUI(){
         hideControlPanel();
+        tintSystemBarsForEndRecord();
         mRecording = false;
         mListeningCard.setVisibility(View.GONE);
         mStartListeningCard.setVisibility(View.VISIBLE);
@@ -234,6 +252,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void startRecordingUI(){
         revealControlPanel();
+        tintSystemBarsForStartRecord();
         //setUpVisual();
         mStartListeningCard.setVisibility(View.GONE);
         mListeningCard.setVisibility(View.VISIBLE);
@@ -279,6 +298,64 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private void addSavedCard(RecordingContentValues saved) {
         //first remove any previously existing contentcard
         //mSaveListeningCard.setVisibility(View.VISIBLE);
+    }
+
+    private void tintSystemBarsForStartRecord(){
+        // Initial colors of each system bar.
+        final int statusBarColor = getResources().getColor(R.color.primary_dark);
+        final int toolbarColor = getResources().getColor(R.color.primary);
+
+        // Desired final colors of each bar.
+        final int statusBarToColor = getResources().getColor(R.color.accent_dark);
+        final int toolbarToColor = getResources().getColor(R.color.accent);
+
+        tintSystemBars(statusBarColor, statusBarToColor, toolbarColor, toolbarToColor);
+    }
+
+    private void tintSystemBarsForEndRecord(){
+        // Initial colors of each system bar.
+        final int statusBarToColor = getResources().getColor(R.color.primary_dark);
+        final int toolbarToColor = getResources().getColor(R.color.primary);
+
+        // Desired final colors of each bar.
+        final int statusBarColor = getResources().getColor(R.color.accent_dark);
+        final int toolbarColor = getResources().getColor(R.color.accent);
+
+        tintSystemBars(statusBarColor, statusBarToColor, toolbarColor, toolbarToColor);
+    }
+
+    private void tintSystemBars(final int statusBarColor, final int statusBarToColor, final int toolbarColor, final int toolbarToColor) {
+        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                // Use animation position to blend colors.
+                float position = animation.getAnimatedFraction();
+
+                // Apply blended color to the status bar.
+                int blended = blendColors(statusBarColor, statusBarToColor, position);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().setStatusBarColor(blended);
+                }
+
+                // Apply blended color to the ActionBar.
+                blended = blendColors(toolbarColor, toolbarToColor, position);
+                ColorDrawable background = new ColorDrawable(blended);
+                ((RecordActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(background);
+            }
+        });
+
+        anim.setDuration(500).start();
+    }
+
+    private int blendColors(int from, int to, float ratio) {
+        final float inverseRatio = 1f - ratio;
+
+        final float r = Color.red(to) * ratio + Color.red(from) * inverseRatio;
+        final float g = Color.green(to) * ratio + Color.green(from) * inverseRatio;
+        final float b = Color.blue(to) * ratio + Color.blue(from) * inverseRatio;
+
+        return Color.rgb((int) r, (int) g, (int) b);
     }
 
 }
