@@ -30,4 +30,7 @@
     <string name="no">No</string>
     <string name="delete_failed">Failed to delete the audio file</string>
     <string name="share_sound">Share recording...</string>
+    <string name="title_activity_preference">Settings</string>
+    <string name="setting_always_on">Always on notification</string>
+    <string name="setting_always_on_summary">Start recording from a notification</string>
 </resources>

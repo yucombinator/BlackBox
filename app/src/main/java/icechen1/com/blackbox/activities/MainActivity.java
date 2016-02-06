@@ -2,8 +2,11 @@ package icechen1.com.blackbox.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
@@ -76,6 +79,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(recordActivity);
             }
         });
+
+        // Edit the color of the nav bar on Lollipop+ devices
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.primary_dark));
+        }
+
+        runAppIntro();
+    }
+
+    private void runAppIntro() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences getPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(getBaseContext());
+
+                boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+                if (isFirstStart) {
+                    //  Launch app intro
+                    Intent i = new Intent(MainActivity.this, IntroActivity.class);
+                    startActivity(i);
+
+                    SharedPreferences.Editor e = getPrefs.edit();
+                    e.putBoolean("firstStart", false);
+                    e.apply();
+                }
+            }
+        });
+        t.start();
     }
 
     @Override
@@ -248,6 +281,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(record);
                 return true;
             case R.id.menu_settings:
+                Intent pref = new Intent(this, PreferenceActivity.class);
+                startActivity(pref);
                 return true;
         }
         return false;

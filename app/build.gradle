@@ -43,6 +43,8 @@ dependencies {
     compile 'com.avast:android-styled-dialogs:2.2.0'
     compile 'net.the4thdimension:audio-wife:1.0.3'
     compile 'com.gregacucnik:edittextview:1.2'
+    compile 'com.github.AndroidDeveloperLB:MaterialPreferenceLibrary:5'
+    compile 'com.github.paolorotolo:appintro:3.3.0'
 }
 buildscript {
     repositories {
