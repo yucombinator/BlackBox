@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +17,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.github.jorgecastilloprz.FABProgressCircle;
 import com.nineoldandroids.animation.ValueAnimator;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.audio.RecordingSampler;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
+import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
@@ -37,7 +39,7 @@ import static humanize.Humanize.duration;
 public class RecordActivityFragment extends Fragment implements RecordingSampler.CalculateVolumeListener {
 
     private View mRoot;
-    private FABProgressCircle mFab;
+    private View mFab;
     private boolean mRecording = false;
     private View mCtlPanel;
     private RecordingSampler mRecordingSampler;
@@ -63,7 +65,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                              Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.fragment_record, container, false);
         mCtlPanel = mRoot.findViewById(R.id.control_panel);
-        mFab = (com.github.jorgecastilloprz.FABProgressCircle) mRoot.findViewById(R.id.fabProgressCircle);
+        mFab = mRoot.findViewById(R.id.fabProgressCircle);
         mRoot.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +116,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             mStartListeningCard.setVisibility(View.GONE);
             mListeningCard.setVisibility(View.VISIBLE);
             mFab.bringToFront();
-            //mFab.show();
             mRecording = true;
         }
 
@@ -138,53 +139,55 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         }
     }
 
-    private void revealControlPanel(){
-        // previously invisible view
+    private void revealControlPanel(boolean shouldAnimate){
+        if (shouldAnimate){
+            // previously invisible view
 
-    // get the center for the clipping circle
-        int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
-        int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
-    // get the final radius for the clipping circle
-        int finalRadius = Math.max(mCtlPanel.getWidth(), mCtlPanel.getHeight());
+            // get the center for the clipping circle
+            int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
+            int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
+            // get the final radius for the clipping circle
+            int finalRadius = Math.max(mCtlPanel.getWidth(), mCtlPanel.getHeight());
 
-    // create the animator for this view (the start radius is zero)
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, 0, finalRadius);
+            // create the animator for this view (the start radius is zero)
+            Animator anim =
+                    ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, 0, finalRadius);
+            anim.start();
+        }
 
-    // make the view visible and start the animation
+        // make the view visible and start the animation
         mCtlPanel.setVisibility(View.VISIBLE);
-        anim.start();
         mFab.bringToFront();
-        mFab.show();
         mDuration.setText(duration(mTime));
-
     }
 
-    private void hideControlPanel(){
+    private void hideControlPanel(boolean shouldAnimate){
+        if(shouldAnimate){
+            // get the center for the clipping circle
+            int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
+            int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
 
-        // get the center for the clipping circle
-        int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
-        int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
+            // get the initial radius for the clipping circle
+            int initialRadius = mCtlPanel.getWidth();
 
-        // get the initial radius for the clipping circle
-        int initialRadius = mCtlPanel.getWidth();
+            // create the animation (the final radius is zero)
+            Animator anim =
+                    ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, initialRadius, 0);
 
-        // create the animation (the final radius is zero)
-        Animator anim =
-                ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, initialRadius, 0);
+            // make the view invisible when the animation is done
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mCtlPanel.setVisibility(View.INVISIBLE);
+                }
+            });
 
-        // make the view invisible when the animation is done
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                mCtlPanel.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        // start the animation
-        anim.start();
-        mFab.beginFinalAnimation();
+            // start the animation
+            anim.start();
+        } else {
+            mCtlPanel.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void setUpVisual(){
@@ -197,8 +200,10 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     @Override
     public void onResume() {
-        setUpVisual();
         super.onResume();
+        //emit message
+        EventBus.getDefault().post(new GetRecordingStatusMessage());
+        setUpVisual();
     }
 
     @Override
@@ -241,8 +246,8 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         //stopRecordingUI();
     }
 
-    private void stopRecordingUI(){
-        hideControlPanel();
+    private void stopRecordingUI(boolean shouldAnimate){
+        hideControlPanel(shouldAnimate);
         tintSystemBarsForEndRecord();
         mRecording = false;
         mListeningCard.setVisibility(View.GONE);
@@ -250,10 +255,9 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         //stopVisual();
     }
 
-    private void startRecordingUI(){
-        revealControlPanel();
+    private void startRecordingUI(boolean shouldAnimate){
+        revealControlPanel(shouldAnimate);
         tintSystemBarsForStartRecord();
-        //setUpVisual();
         mStartListeningCard.setVisibility(View.GONE);
         mListeningCard.setVisibility(View.VISIBLE);
         mRecording = true;
@@ -264,19 +268,30 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     }
 
+    @Subscribe
     public void onEvent(final RecordStatusMessage event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(event.status == RecordStatusMessage.STOPPED){
-                    stopRecordingUI();
-                }else{
-                    startRecordingUI();
+                switch (event.status) {
+                    case RecordStatusMessage.JUST_STOPPED:
+                        stopRecordingUI(true);
+                        break;
+                    case RecordStatusMessage.STOPPED:
+                        stopRecordingUI(false);
+                        break;
+                    case RecordStatusMessage.JUST_STARTED:
+                        startRecordingUI(true);
+                        break;
+                    case RecordStatusMessage.STARTED:
+                        startRecordingUI(false);
+                        break;
                 }
             }
         });
     }
 
+    @Subscribe
     public void onEvent(final AudioBufferMessage event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -286,6 +301,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         });
     }
 
+    @Subscribe
     public void onEvent(final RecordingSavedMessage event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override

@@ -1,11 +1,9 @@
 package icechen1.com.blackbox.common;
 
 import android.content.Context;
-import android.net.Uri;
 
 import icechen1.com.blackbox.provider.recording.RecordingColumns;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
-import icechen1.com.blackbox.provider.recording.RecordingModel;
 
 /**
  * Created by yuchen.hou on 15-07-02.
@@ -22,5 +20,15 @@ public class DatabaseHelper {
         RecordingContentValues values = new RecordingContentValues();
         values.putFavorite(state);
         cxt.getContentResolver().update(RecordingColumns.CONTENT_URI, values.values(), RecordingColumns._ID + " = " + id, null);
+    }
+
+    public static void editTitleforId(Context cxt, long id, String name){
+        RecordingContentValues values = new RecordingContentValues();
+        values.putName(name);
+        cxt.getContentResolver().update(RecordingColumns.CONTENT_URI, values.values(), RecordingColumns._ID + " = " + id, null);
+    }
+
+    public static void deleteForId(Context cxt, long id){
+        cxt.getContentResolver().delete(RecordingColumns.CONTENT_URI, RecordingColumns._ID + " = " + id, null);
     }
 }

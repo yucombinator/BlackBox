@@ -18,6 +18,8 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
         <TextView
+            android:padding="8dp"
+            android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"

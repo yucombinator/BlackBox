@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Rewind</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="list">List</string>
     <string name="title_activity_record">Record</string>
@@ -26,4 +25,9 @@
     <string name="close">Close</string>
     <string name="recording_msg">Rewind will keep listening in the background.</string>
     <string name="settings">Settings</string>
+    <string name="delete_confirm">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_failed">Failed to delete the audio file</string>
+    <string name="share_sound">Share recording...</string>
 </resources>

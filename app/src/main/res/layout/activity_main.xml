@@ -11,4 +11,16 @@
         app:toolbar_height="64dp"
         app:content_view="@layout/layout_base"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_mic_white_36dp"
+        android:layout_margin="16dp"
+        app:rippleColor="@color/accent_dark"
+        app:elevation="@dimen/fab_elevation"
+        app:borderWidth="0dp"
+        />
+
 </FrameLayout>

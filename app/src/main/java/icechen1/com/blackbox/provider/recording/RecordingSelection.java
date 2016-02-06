@@ -1,7 +1,5 @@
 package icechen1.com.blackbox.provider.recording;
 
-import java.util.Date;
-
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -44,6 +42,10 @@ public class RecordingSelection extends AbstractSelection<RecordingSelection> {
      */
     public RecordingCursor query(ContentResolver contentResolver) {
         return query(contentResolver, null, null);
+    }
+
+    public RecordingCursor reverseQueryByTimestamp(ContentResolver contentResolver) {
+        return query(contentResolver, null, RecordingColumns.TIMESTAMP + " DESC");
     }
 
 

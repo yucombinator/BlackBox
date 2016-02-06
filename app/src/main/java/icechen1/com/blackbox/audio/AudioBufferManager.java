@@ -1,23 +1,22 @@
 package icechen1.com.blackbox.audio;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.util.Log;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
-
-import static humanize.Humanize.prettyTimeFormat;
 
 public class AudioBufferManager extends Thread{
     private static AudioBufferManager mInstance = null;

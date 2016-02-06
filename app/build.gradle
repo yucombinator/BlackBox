@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "icechen1.com.blackbox"
-        minSdkVersion 14
-        targetSdkVersion 23
+        minSdkVersion 15
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -26,12 +26,12 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.0.0'
-    compile 'com.android.support:design:23.0.0'
-    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'com.android.support:appcompat-v7:23.1.+'
+    compile 'com.android.support:design:23.1.+'
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
-    compile 'com.android.support:recyclerview-v7:23.0.+'
-    compile 'com.android.support:cardview-v7:23.0.+'
+    compile 'com.android.support:recyclerview-v7:23.1.+'
+    compile 'com.android.support:cardview-v7:23.1.+'
     compile 'com.tyorikan:voice-recording-visualizer:1.0.3@aar'
     compile 'com.github.mfornos:humanize-slim:1.2.2'
     compile 'com.github.ppamorim:cult:0.1.5'
@@ -42,6 +42,7 @@ dependencies {
     compile 'com.tonicartos:superslim:0.4.13'
     compile 'com.avast:android-styled-dialogs:2.2.0'
     compile 'net.the4thdimension:audio-wife:1.0.3'
+    compile 'com.gregacucnik:edittextview:1.2'
 }
 buildscript {
     repositories {

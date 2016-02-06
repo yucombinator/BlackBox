@@ -7,16 +7,18 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import de.greenrobot.event.EventBus;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.AudioBufferManager;
+import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
 
 
@@ -34,6 +36,13 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
     int mRecordingLength = LENGTH_DEFAULT;
     int mMode = MODE_START;
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        EventBus.getDefault().register(this);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -69,17 +78,17 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     }
 
     private void startRecording(){
-
         mAudio = AudioBufferManager.getInstance(this, mRecordingLength, this);
         mAudio.start();
         startForeground(1995, buildNotification());
         mNotificationManager.cancel(1996); //remove passive notif
 
-        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.STARTED));
+        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STARTED));
     }
+
     private void stopRecording(){
         //emit message
-        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.STOPPED));
+        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STOPPED));
         //set up notif
         setUpPassiveNotification();
         mAudio.close();
@@ -149,5 +158,13 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         Log.e("Rewind", "Error", e);
         stopForeground(true);
         stopSelf();
+    }
+
+    @Subscribe
+    public void onEvent(final GetRecordingStatusMessage event) {
+        EventBus.getDefault().post(new RecordStatusMessage(
+                (mAudio!= null && mAudio.isRecording()) ?
+                RecordStatusMessage.STARTED :
+                RecordStatusMessage.STOPPED));
     }
 }

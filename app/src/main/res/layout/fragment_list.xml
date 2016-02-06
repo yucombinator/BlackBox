@@ -17,18 +17,5 @@
         app:recyclerClipToPadding="false"
         app:recyclerPadding="4dp"
         app:scrollbarStyle="insideInset"/>
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_mic_white_18dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin= "10dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_colorPressed="@color/accent"
-        fab:fab_colorRipple="@color/accent_dark"
-         />
+
     </RelativeLayout>

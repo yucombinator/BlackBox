@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -64,6 +66,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mNavigationMenu = (NavigationView) findViewById(R.id.vNavigation);
         mNavigationMenu.setNavigationItemSelectedListener(this);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //fab.attachToRecyclerView(mRecyclerView.getRecyclerView());
+        fab.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent recordActivity = new Intent(MainActivity.this, RecordActivity.class);
+                startActivity(recordActivity);
+            }
+        });
     }
 
     @Override
@@ -156,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 LayoutInflater.from(this).inflate(R.layout.layout_search, null), searchViewCallback));
         cultView.setBackgroundColor(getResources().getColor(R.color.primary));
         cultView.getInnerToolbar().setBackgroundColor(getResources().getColor(R.color.primary_dark));
-        cultView.getInnerToolbar().setTitleTextColor(getResources().getColor(android.R.color.black));
+        cultView.getInnerToolbar().setTitleTextColor(getResources().getColor(R.color.darker_gray));
         cultView.getInnerToolbar().setBackgroundColor(getResources().getColor(R.color.white));
         cultView.getOutToolbar().setBackgroundColor(getResources().getColor(R.color.primary));
         cultView.setOutContentLayout(R.layout.fragment_search_list);

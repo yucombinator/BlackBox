@@ -11,6 +11,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppThemeNoTitle" >
+
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name" >
@@ -18,7 +19,8 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>y not
+
         </activity>
 
         <service

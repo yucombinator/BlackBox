@@ -1,20 +1,21 @@
 package icechen1.com.blackbox.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.malinskiy.superrecyclerview.SuperRecyclerView;
-import com.melnykov.fab.FloatingActionButton;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import icechen1.com.blackbox.R;
-import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.adapter.RecordingAdapter;
-import icechen1.com.blackbox.services.AudioRecordService;
+import icechen1.com.blackbox.messages.DatabaseUpdatedMessage;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -32,6 +33,12 @@ public class MainActivityFragment extends Fragment {
         args.putBoolean("favorite", favorite);
         f.setArguments(args);
         return f;
+    }
+
+    @Override
+    public void onCreate(Bundle b){
+        EventBus.getDefault().register(this);
+        super.onCreate(b);
     }
 
     @Override
@@ -63,16 +70,6 @@ public class MainActivityFragment extends Fragment {
         if (mScrollPosition != RecyclerView.NO_POSITION && mScrollPosition < count) {
             mLayoutManager.scrollToPosition(mScrollPosition);
         }
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.attachToRecyclerView(mRecyclerView.getRecyclerView());
-        fab.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Intent recordActivity = new Intent(getActivity(),RecordActivity.class);
-                getActivity().startActivity(recordActivity);
-            }
-        });
         return view;
         }
     /**
@@ -98,5 +95,16 @@ public class MainActivityFragment extends Fragment {
         super.onResume();
         mAdapter.refreshCursor();
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe
+    public void onEvent(final DatabaseUpdatedMessage event) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.refreshCursor();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 }
