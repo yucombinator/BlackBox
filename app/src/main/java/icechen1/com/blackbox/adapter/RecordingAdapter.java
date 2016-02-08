@@ -66,7 +66,7 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlayerDialogFragment.show(mContext, cursor, position);
+                PlayerDialogFragment.show(mContext, cursor.getId());
             }
         });
     }

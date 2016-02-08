@@ -17,9 +17,9 @@ public class IntroActivity extends AppIntro2 {
     @Override
     public void init(Bundle savedInstanceState) {
 
-        addSlide(AppIntroFragment.newInstance("Test", "Test2", R.drawable.ic_launcher, getResources().getColor(R.color.primary)));
-        addSlide(AppIntroFragment.newInstance("Test", "Test2", R.drawable.ic_launcher, getResources().getColor(R.color.primary)));
-        addSlide(AppIntroFragment.newInstance("Test", "Test2", R.drawable.ic_launcher, getResources().getColor(R.color.primary)));
+        addSlide(AppIntroFragment.newInstance("Welcome to Rewind", "Rewind is a reverse voice recorder.", R.drawable.ic_launcher, getResources().getColor(R.color.primary)));
+        addSlide(AppIntroFragment.newInstance("Reverse voice recorder?", "Rewind allows you to passively record audio from your phone, and allows you to recall everything that's recorded in the last few 1 to 30 minutes.", R.drawable.ic_launcher, getResources().getColor(R.color.primary_dark)));
+        addSlide(AppIntroFragment.newInstance("Get started", "Start your first recording by pressing the record button on the bottom right!", R.drawable.ic_launcher, getResources().getColor(R.color.accent)));
         showStatusBar(true);
 
         // Edit the color of the nav bar on Lollipop+ devices

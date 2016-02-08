@@ -1,5 +1,6 @@
 package icechen1.com.blackbox.fragments;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.DatabaseUpdatedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingCursor;
+import icechen1.com.blackbox.provider.recording.RecordingSelection;
 import nl.changer.audiowife.AudioWife;
 
 
@@ -33,11 +35,14 @@ import nl.changer.audiowife.AudioWife;
  */
 public class PlayerDialogFragment extends BaseDialogFragment {
 
+    private static final String STATE_ID = "STATE_ID";
+
     private DialogInterface.OnDismissListener onDismissListener;
     private EditTextView mTitle;
     private boolean mHasChanged = false;
     private ImageView mDeleteBtn;
     private ImageView mShareBtn;
+    private long mID;
 
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;
@@ -47,37 +52,51 @@ public class PlayerDialogFragment extends BaseDialogFragment {
     private String path;
     private long timestamp;
     private long duration;
+    private Boolean isFavorite;
     private View mRoot;
     private SeekBar mMediaSeekBar;
     private TextView mRunTime;
     private TextView mTotalTime;
     private View mPlayMedia;
     private View mPauseMedia;
-    private RecordingCursor mCursor;
-    private int mItem;
     private ImageView mSetFavoriteBtn;
     private ImageView mUnSetFavoriteBtn;
 
     public PlayerDialogFragment() {
     }
 
-    public static void show(FragmentActivity activity, RecordingCursor mResults, int item) {
-        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
-        ft.addToBackStack(null);
-        new PlayerDialogFragment().setItem(mResults,item).show(ft, "PlayerDialogFragment");
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putLong(STATE_ID, mID);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 
-    public PlayerDialogFragment setItem(RecordingCursor mResults, int item){
-        if(mResults.moveToPosition(item)){
-            name = mResults.getName();
-            path = mResults.getFilename();
-            timestamp = mResults.getTimestamp();
-            duration = mResults.getDuration();
+    public static void show(FragmentActivity activity, long id) {
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+        ft.addToBackStack(null);
+        new PlayerDialogFragment().setItem(id, activity).show(ft, "PlayerDialogFragment");
+    }
 
-            //save the cursor and item
-            mCursor = mResults;
-            mItem = item;
+        public void getItemForId(long id, Context cxt){
+        RecordingCursor cursor = new RecordingSelection().id(id).reverseQueryByTimestamp(cxt.getContentResolver());
+        if(cursor.getCount() > 0){
+            cursor.moveToFirst();
+            name = cursor.getName();
+            path = cursor.getFilename();
+            timestamp = cursor.getTimestamp();
+            duration = cursor.getDuration();
+            isFavorite = cursor.getFavorite();
+            mID = id;
+        } else {
+            throw new IllegalArgumentException("Item not found");
         }
+    }
+
+    public PlayerDialogFragment setItem(long id, Context cxt){
+        getItemForId(id, cxt);
         return this;
     }
 
@@ -116,7 +135,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         delete_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper.deleteForId(getActivity(), mCursor.getId());
+                DatabaseHelper.deleteForId(getActivity(), mID);
                 //delete file
                 File file = new File(path);
                 boolean deleted = file.delete();
@@ -145,14 +164,17 @@ public class PlayerDialogFragment extends BaseDialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         getDialog().setCanceledOnTouchOutside(false);
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            mID = savedInstanceState.getLong(STATE_ID);
+            getItemForId(mID, getContext());
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     void setUpFavoriteState(){
-        boolean isFavorite = false;
-        mCursor.moveToPosition(mItem);
-        isFavorite = mCursor.getFavorite();
-
         if(isFavorite){
             mUnSetFavoriteBtn.setVisibility(View.VISIBLE);
             mSetFavoriteBtn.setVisibility(View.GONE);
@@ -164,7 +186,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         mSetFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), true);
+                DatabaseHelper.editFavoriteforId(getActivity(), mID, true);
                 mUnSetFavoriteBtn.setVisibility(View.VISIBLE);
                 mSetFavoriteBtn.setVisibility(View.GONE);
                 mHasChanged = true;
@@ -174,7 +196,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
         mUnSetFavoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseHelper.editFavoriteforId(getActivity(), mCursor.getId(), false);
+                DatabaseHelper.editFavoriteforId(getActivity(), mID, false);
                 mSetFavoriteBtn.setVisibility(View.VISIBLE);
                 mUnSetFavoriteBtn.setVisibility(View.GONE);
                 mHasChanged = true;
@@ -209,7 +231,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
 
             @Override
             public void onEditTextViewEditModeFinish(String text) {
-                DatabaseHelper.editTitleforId(getActivity(), mCursor.getId(), text);
+                DatabaseHelper.editTitleforId(getActivity(), mID, text);
                 mHasChanged = true;
             }
         });
