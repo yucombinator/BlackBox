@@ -15,6 +15,7 @@ import java.util.Date;
 import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
+import icechen1.com.blackbox.messages.DatabaseUpdatedMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 
@@ -148,7 +149,7 @@ public class AudioBufferManager extends Thread{
             //save entry to the database
             RecordingContentValues saved = DatabaseHelper.saveRecording(mContext, "Recorded on " + new SimpleDateFormat("dd MMM").format(new Date(currentMillis)), writer.getPath(), actualTime, currentMillis);
             EventBus.getDefault().post(new RecordingSavedMessage(saved));
-
+            EventBus.getDefault().post(new DatabaseUpdatedMessage());
 
         } catch (IOException e) {
             e.printStackTrace();

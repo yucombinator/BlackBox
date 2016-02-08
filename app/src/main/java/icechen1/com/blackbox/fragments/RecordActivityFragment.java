@@ -124,17 +124,17 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void getTime(View v){
         switch(v.getId()){
-            case R.id.time_30sec :
-                mTime = 30;
-                break;
-            case R.id.time_1min :
+            case R.id.time_1_minute :
                 mTime = 60;
                 break;
-            case R.id.time_5min :
+            case R.id.time_5_minutes :
                 mTime = 5 * 60;
                 break;
-            case R.id.time_10min :
+            case R.id.time_10_minutes :
                 mTime = 10 * 60;
+                break;
+            case R.id.time_30_minutes :
+                mTime = 30 * 60;
                 break;
         }
     }

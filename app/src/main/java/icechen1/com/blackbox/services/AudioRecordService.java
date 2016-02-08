@@ -61,11 +61,11 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             mRecordingLength = extras.getInt("length", LENGTH_DEFAULT); //in seconds
         }
         if(mMode == MODE_START){
-            Toast.makeText(this, "Started Listening", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.started_listening), Toast.LENGTH_SHORT).show();
             startRecording();
         }
         else if (mMode == MODE_STOP){
-            Toast.makeText(this, "Stopped Listening", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.stopped_listening), Toast.LENGTH_SHORT).show();
             stopRecording();
         }else if(mMode == MODE_SET_PASSIVE_NOTIF){
             setUpPassiveNotification();
@@ -89,11 +89,11 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     }
 
     private void stopRecording(){
-        //emit message
-        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STOPPED));
+        mAudio.close();
         //set up notif
         setUpPassiveNotification();
-        mAudio.close();
+        //emit message
+        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STOPPED));
     }
 
     @Override

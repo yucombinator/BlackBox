@@ -13,10 +13,10 @@
     <string name="open_inapp">Open app</string>
     <string name="start_listening">Start listening</string>
     <string name="notif_ready">Ready to start listening.</string>
-    <string name="time_30_seconds">30sec</string>
-    <string name="time_1_minute">1min</string>
-    <string name="time_5_minutes">5mins</string>
-    <string name="time_10_minutes">10mins</string>
+    <string name="time_1_minute">1 min</string>
+    <string name="time_5_minutes">5 mins</string>
+    <string name="time_10_minutes">10 mins</string>
+    <string name="time_30_minutes">30 mins</string>
     <string name="search">Search</string>
     <string name="recent">Recent</string>
     <string name="favorites">Favorites</string>
@@ -33,4 +33,6 @@
     <string name="title_activity_preference">Settings</string>
     <string name="setting_always_on">Always on notification</string>
     <string name="setting_always_on_summary">Start recording from a notification</string>
+    <string name="started_listening">Started Listening</string>
+    <string name="stopped_listening">Saving Recording.</string>
 </resources>
