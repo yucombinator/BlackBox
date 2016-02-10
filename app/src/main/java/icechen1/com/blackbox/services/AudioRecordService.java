@@ -112,10 +112,8 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
         Notification notif = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_mic_white_36dp)
-                .setUsesChronometer(true)
                 .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
                 .setTicker(getResources().getString(R.string.saving_recording))
-                .setWhen(System.currentTimeMillis())
                 .setContentTitle(getResources().getString(R.string.app_name))
                 .setContentText(getResources().getString(R.string.saving_recording))
                 .setContentIntent(activityPIntent)
