@@ -59,14 +59,14 @@ public class RecordingAdapter extends CursorRecyclerViewAdapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final RecordingCursor cursor) {
         final ViewHolder vh = (ViewHolder) holder;
-        final int position = cursor.getPosition();
+        final long id = cursor.getId();
         vh.mTitle.setText(cursor.getName());
         vh.mLength.setText(String.valueOf(duration(cursor.getDuration() / 1000)));
         vh.mDate.setText(String.valueOf(naturalTime(new Date(cursor.getTimestamp()))));
         vh.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlayerDialogFragment.show(mContext, cursor.getId());
+                PlayerDialogFragment.show(mContext, id);
             }
         });
     }

@@ -3,10 +3,12 @@ package icechen1.com.blackbox.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -50,6 +52,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private RadioButton mCheckedRadioButton;
     private int mTime;
     private TextView mDuration;
+    private RadioGroup mRGroup;
 
     public RecordActivityFragment() {
     }
@@ -90,13 +93,14 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecordingSampler.link(mVisualizerView);     // link to visualizer
 
         // This will get the radiogroup
-        RadioGroup rGroup = (RadioGroup)mRoot.findViewById(R.id.radio_group_time);
+        mRGroup = (RadioGroup)mRoot.findViewById(R.id.radio_group_time);
         // This will get the radiobutton in the radiogroup that is checked
-        mCheckedRadioButton = (RadioButton)rGroup.findViewById(rGroup.getCheckedRadioButtonId());
+        mCheckedRadioButton = (RadioButton)mRGroup.findViewById(mRGroup.getCheckedRadioButtonId());
+        setDefaultChecked();
         getTime(mCheckedRadioButton);
 
         // This overrides the radiogroup onCheckListener
-        rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mRGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
                 // This will get the radiobutton that has changed in its check state
                 mCheckedRadioButton = (RadioButton) rGroup.findViewById(checkedId);
@@ -120,6 +124,26 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         }
 
         return mRoot;
+    }
+
+    private void setDefaultChecked(){
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+        int default_length = Integer.valueOf(getPrefs.getString("default_length", "300"));
+        switch (default_length){
+            case 60:
+                mRGroup.check(R.id.time_1_minute);
+                break;
+            case 5 * 60:
+                mRGroup.check(R.id.time_5_minutes);
+                break;
+            case 10 * 60:
+                mRGroup.check(R.id.time_10_minutes);
+                break;
+            case 30 * 60:
+                mRGroup.check(R.id.time_30_minutes);
+                break;
+        }
     }
 
     private void getTime(View v){

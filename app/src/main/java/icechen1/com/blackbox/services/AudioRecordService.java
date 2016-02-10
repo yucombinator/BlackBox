@@ -28,7 +28,6 @@ import icechen1.com.blackbox.messages.RecordStatusMessage;
  * Created by yuchen.hou on 15-06-27.
  */
 public class AudioRecordService extends Service implements AudioBufferManager.OnAudioRecordStateUpdate {
-    private static final int LENGTH_DEFAULT = 60;
     public static final int MODE_START = 1;
     public static final int MODE_STOP = 2;
     public static final int MODE_SET_PASSIVE_NOTIF = 3;
@@ -36,7 +35,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
     NotificationManager mNotificationManager;
 
-    int mRecordingLength = LENGTH_DEFAULT;
+    int mRecordingLength;
     int mMode = MODE_START;
 
     @Override
@@ -55,10 +54,15 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         }
 
         //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+        int default_length = Integer.valueOf(getPrefs.getString("default_length", "300"));
+        mRecordingLength = default_length;
+
         Bundle extras = intent.getExtras();
         if(extras != null){
             mMode = extras.getInt("mode", MODE_START); //in seconds
-            mRecordingLength = extras.getInt("length", LENGTH_DEFAULT); //in seconds
+            mRecordingLength = extras.getInt("length", default_length); //in seconds
         }
         if(mMode == MODE_START){
             Toast.makeText(this, getResources().getString(R.string.started_listening), Toast.LENGTH_SHORT).show();
@@ -89,6 +93,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     }
 
     private void stopRecording(){
+        updateSavingNotification();
         mAudio.close();
         //set up notif
         setUpPassiveNotification();
@@ -99,6 +104,27 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     @Override
     public void onDestroy(){
         stopForeground(true);
+    }
+
+    private void updateSavingNotification(){
+        Intent activityIntent = new Intent(this, RecordActivity.class);
+        PendingIntent activityPIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notif = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_mic_white_36dp)
+                .setUsesChronometer(true)
+                .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
+                .setTicker(getResources().getString(R.string.saving_recording))
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.saving_recording))
+                .setContentIntent(activityPIntent)
+                .setPriority(Notification.PRIORITY_MAX)
+                .build();
+
+        mNotificationManager.notify(
+                1995,
+                notif);
     }
 
     private Notification buildNotification(){

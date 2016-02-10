@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
@@ -65,7 +66,7 @@ public class AudioBufferManager extends Thread{
         buffersize = 3584;
         try {
             //Find the best supported sample rate
-            for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {  // add the rates you wish to check against
+            for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {
                 //TODO Stereo support requires changing some buffer sizes
                 int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO , AudioFormat.ENCODING_PCM_16BIT);
                 if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
@@ -98,7 +99,6 @@ public class AudioBufferManager extends Thread{
     @Override
     public void run() {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-
         //Create our buffers
         byte[] buffer  = new byte[buffersize];
         //A circular buffer
@@ -147,7 +147,12 @@ public class AudioBufferManager extends Thread{
             long currentMillis = System.currentTimeMillis();
             long actualTime = AppUtils.getBufferSavedTime(startedTime, currentMillis, mBufferDuration);
             //save entry to the database
-            RecordingContentValues saved = DatabaseHelper.saveRecording(mContext, "Recorded on " + new SimpleDateFormat("dd MMM").format(new Date(currentMillis)), writer.getPath(), actualTime, currentMillis);
+            RecordingContentValues saved = DatabaseHelper.saveRecording(
+                    mContext,
+                    mContext.getResources().getString(R.string.recorded_on, new SimpleDateFormat("dd MMM").format(new Date(currentMillis))),
+                    writer.getPath(),
+                    actualTime,
+                    currentMillis);
             EventBus.getDefault().post(new RecordingSavedMessage(saved));
             EventBus.getDefault().post(new DatabaseUpdatedMessage());
 

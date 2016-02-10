@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference android:title="@string/setting_always_on"
+    <SwitchPreference android:title="@string/setting_always_on"
         android:defaultValue="true"
         android:summary="@string/setting_always_on_summary"
         android:key="always_on_notification" />
+        <ListPreference android:title="@string/setting_default_length"
+        android:defaultValue="300"
+        android:summary="@string/setting_default_length_summary"
+        android:key="default_length"
+        android:entries="@array/length_keys"
+        android:entryValues="@array/length_values"/>
 </PreferenceScreen>

@@ -35,4 +35,8 @@
     <string name="setting_always_on_summary">Start recording from a notification</string>
     <string name="started_listening">Started Listening</string>
     <string name="stopped_listening">Saving Recording.</string>
+    <string name="saving_recording">Saving Recording...</string>
+    <string name="setting_default_length">Default buffer duration</string>
+    <string name="setting_default_length_summary">How long does the recorder retain recording for</string>
+    <string name="recorded_on">Recorded on %s</string>
 </resources>

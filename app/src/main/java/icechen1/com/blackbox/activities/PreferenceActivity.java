@@ -2,8 +2,8 @@ package icechen1.com.blackbox.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.SwitchPreference;
 
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.services.AudioRecordService;
@@ -19,7 +19,7 @@ public class PreferenceActivity extends com.lb.material_preferences_library.Pref
     protected void onCreate(final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        CheckBoxPreference themeListPreference = (CheckBoxPreference)findPreference("always_on_notification");
+        SwitchPreference themeListPreference = (SwitchPreference)findPreference("always_on_notification");
         themeListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
