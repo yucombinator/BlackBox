@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private View mRoot;
     private View mFab;
+    private FloatingActionButton mFabBtn;
     private boolean mRecording = false;
     private View mCtlPanel;
     private RecordingSampler mRecordingSampler;
@@ -69,6 +71,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRoot = inflater.inflate(R.layout.fragment_record, container, false);
         mCtlPanel = mRoot.findViewById(R.id.control_panel);
         mFab = mRoot.findViewById(R.id.fabProgressCircle);
+        mFabBtn = (FloatingActionButton) mRoot.findViewById(R.id.fab);
         mRoot.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,6 +260,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void startRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
+        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
         i.putExtra("mode", AudioRecordService.MODE_START);
         i.putExtra("length", mTime);
         getActivity().startService(i);
@@ -265,6 +269,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void stopRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
+        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_48dp));
         i.putExtra("mode", AudioRecordService.MODE_STOP);
         getActivity().startService(i);
         //stopRecordingUI();

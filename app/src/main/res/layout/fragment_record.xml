@@ -66,6 +66,7 @@
             android:layout_margin="25dp"
             app:rippleColor="@color/accent_dark"
             app:elevation="@dimen/fab_elevation"
+            android:scaleType="center"
             app:borderWidth="0dp"
             />
 
