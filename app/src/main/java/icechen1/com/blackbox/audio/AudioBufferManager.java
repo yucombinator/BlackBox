@@ -20,8 +20,7 @@ import icechen1.com.blackbox.messages.DatabaseUpdatedMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 
-public class AudioBufferManager extends Thread{
-    private static AudioBufferManager mInstance = null;
+public class AudioBufferManager extends Thread {
     private final Context mContext;
 
     static String LOG_TAG = "BlackBox";
@@ -35,19 +34,6 @@ public class AudioBufferManager extends Thread{
     public interface OnAudioRecordStateUpdate{
         void onRecordingSaved();
         void onRecordingError(Exception e);
-    }
-
-    public static AudioBufferManager getInstance(Context cxt, int time, OnAudioRecordStateUpdate l){
-        if(mInstance != null){
-            return mInstance;
-        }else{
-            mInstance = new AudioBufferManager(cxt, time, l);
-            return mInstance;
-        }
-    }
-
-    public static AudioBufferManager getInstanceIfExisting(){
-        return mInstance;
     }
 
     public boolean isRecording(){
@@ -104,11 +90,18 @@ public class AudioBufferManager extends Thread{
         //A circular buffer
         CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * mBufferDuration * 2);  //2 is a magic number
         arecord.startRecording();
+
+        //Check if we acquired the mic
+        if(arecord.getState() != AudioRecord.STATE_INITIALIZED){
+            Log.e(LOG_TAG, "AudioRecord error");
+            return;
+        }
+
         int i = 0;
         //get timestamp
         long startedTime = System.currentTimeMillis();
         // start recording and playing back
-        while(started) {
+        while(started && arecord.getState() == AudioRecord.STATE_INITIALIZED) {
             try {
                 //Write
                 arecord.read(buffer, 0, buffersize);
@@ -133,12 +126,15 @@ public class AudioBufferManager extends Thread{
             AudioFileWriter writer = new AudioFileWriter(null);
             writer.setupHeader(arecord, circBuffer.length());
 
-            Log.i(LOG_TAG, "buffer length " + circBuffer.length());
+            arecord.stop();
+            arecord.release();
+
+            Log.d(LOG_TAG, "buffer length " + circBuffer.length());
 
             byte[] readbuffer = new byte[circBuffer.length()];
             int retrieved = circBuffer.get(readbuffer, 0, circBuffer.length());
 
-            Log.i(LOG_TAG, "retrieved length " + retrieved);
+            Log.d(LOG_TAG, "retrieved length " + retrieved);
 
             writer.write(readbuffer, retrieved);
 
@@ -169,13 +165,7 @@ public class AudioBufferManager extends Thread{
             }
         }
 
-        arecord.stop();
-        arecord.release();
-
-        Log.i(LOG_TAG, "loopback exit");
-
-        mInstance = null; //remove the instance reference
-
+        Log.d(LOG_TAG, "loopback exit");
 
         if(mCallback != null){
             mCallback.onRecordingSaved();
@@ -185,4 +175,6 @@ public class AudioBufferManager extends Thread{
         started = false;
         //arecord.release();
     }
+
+
 }

@@ -27,7 +27,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.activities.RecordActivity;
-import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.audio.RecordingSampler;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
@@ -75,11 +74,11 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRoot.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mRecording) {
-                    startRecording();
-                } else {
-                    stopRecording();
-                }
+            if (!mRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
             }
         });
 
@@ -105,17 +104,17 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         // This overrides the radiogroup onCheckListener
         mRGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup rGroup, int checkedId) {
-                // This will get the radiobutton that has changed in its check state
-                mCheckedRadioButton = (RadioButton) rGroup.findViewById(checkedId);
-                // This puts the value (true/false) into the variable
-                boolean isChecked = mCheckedRadioButton.isChecked();
-                // If the radiobutton that has changed in check state is now checked...
-                if (isChecked) {
-                    getTime(mCheckedRadioButton);
-                }
+            // This will get the radiobutton that has changed in its check state
+            mCheckedRadioButton = (RadioButton) rGroup.findViewById(checkedId);
+            // This puts the value (true/false) into the variable
+            boolean isChecked = mCheckedRadioButton.isChecked();
+            // If the radiobutton that has changed in check state is now checked...
+            if (isChecked) {
+                getTime(mCheckedRadioButton);
+            }
             }
         });
-
+/*
         if(AudioBufferManager.getInstanceIfExisting() != null){
             mTime = AudioBufferManager.getInstanceIfExisting().getDuration();
             tintSystemBarsForStartRecord();
@@ -125,7 +124,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             mFab.bringToFront();
             mRecording = true;
         }
-
+*/
         return mRoot;
     }
 
@@ -302,20 +301,20 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                switch (event.status) {
-                    case RecordStatusMessage.JUST_STOPPED:
-                        stopRecordingUI(true);
-                        break;
-                    case RecordStatusMessage.STOPPED:
-                        stopRecordingUI(false);
-                        break;
-                    case RecordStatusMessage.JUST_STARTED:
-                        startRecordingUI(true);
-                        break;
-                    case RecordStatusMessage.STARTED:
-                        startRecordingUI(false);
-                        break;
-                }
+            switch (event.status) {
+                case RecordStatusMessage.JUST_STOPPED:
+                    stopRecordingUI(true);
+                    break;
+                case RecordStatusMessage.STOPPED:
+                    stopRecordingUI(false);
+                    break;
+                case RecordStatusMessage.JUST_STARTED:
+                    startRecordingUI(true);
+                    break;
+                case RecordStatusMessage.STARTED:
+                    startRecordingUI(false);
+                    break;
+            }
             }
         });
     }
@@ -374,19 +373,19 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                // Use animation position to blend colors.
-                float position = animation.getAnimatedFraction();
+            // Use animation position to blend colors.
+            float position = animation.getAnimatedFraction();
 
-                // Apply blended color to the status bar.
-                int blended = blendColors(statusBarColor, statusBarToColor, position);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().setStatusBarColor(blended);
-                }
+            // Apply blended color to the status bar.
+            int blended = blendColors(statusBarColor, statusBarToColor, position);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(blended);
+            }
 
-                // Apply blended color to the ActionBar.
-                blended = blendColors(toolbarColor, toolbarToColor, position);
-                ColorDrawable background = new ColorDrawable(blended);
-                ((RecordActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(background);
+            // Apply blended color to the ActionBar.
+            blended = blendColors(toolbarColor, toolbarToColor, position);
+            ColorDrawable background = new ColorDrawable(blended);
+            ((RecordActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(background);
             }
         });
 
