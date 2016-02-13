@@ -8,12 +8,12 @@ android {
         applicationId "icechen1.com.blackbox"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

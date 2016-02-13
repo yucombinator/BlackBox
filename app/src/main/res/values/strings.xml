@@ -39,4 +39,6 @@
     <string name="setting_default_length">Default buffer duration</string>
     <string name="setting_default_length_summary">How long does the recorder retain recording for</string>
     <string name="recorded_on">Recorded on %s</string>
+    <string name="feature_recommendations">Suggestions</string>
+    <string name="app_share">Share App</string>
 </resources>

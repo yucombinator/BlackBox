@@ -14,5 +14,9 @@
             android:id="@+id/menu_settings"
             android:icon="@drawable/ic_settings_black_18dp"
             android:title="@string/settings" />
+        <item
+            android:id="@+id/menu_suggestions"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="@string/feature_recommendations" />
     </group>
 </menu>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -283,6 +284,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.menu_settings:
                 Intent pref = new Intent(this, PreferenceActivity.class);
                 startActivity(pref);
+                return true;
+            case R.id.menu_suggestions:
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+                emailIntent.setData(Uri.parse("mailto: me+rewind@yuchenhou.com"));
+                startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feature_recommendations)));
                 return true;
         }
         return false;
