@@ -8,8 +8,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -35,6 +37,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.adapter.RecordingAdapter;
+import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.NavigationDrawerUtil;
 import icechen1.com.blackbox.fragments.MainActivityFragment;
 import icechen1.com.blackbox.views.SearchView;
@@ -56,12 +59,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager viewPager;
     private SmartTabLayout smartTabLayout;
     private NavigationView mNavigationMenu;
+    private CoordinatorLayout mCoordinatorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.clayout);
         cultView = (CultView) findViewById(R.id.cult_view);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_left);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -87,6 +92,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         runAppIntro();
+        showAppRate();
+    }
+
+    private void showAppRate() {
+        if(!AppUtils.shouldLaunchAppRater(this)){
+            return;
+        }
+        Snackbar.make(mCoordinatorLayout, getString(R.string.rate_app), Snackbar.LENGTH_LONG)
+            .setAction(getString(R.string.rate_app_action), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=icechen1.com.blackbox")));
+                }
+            }).show();
     }
 
     private void runAppIntro() {

@@ -41,4 +41,6 @@
     <string name="recorded_on">Recorded on %s</string>
     <string name="feature_recommendations">Suggestions</string>
     <string name="app_share">Share App</string>
+    <string name="rate_app">Like the app?</string>
+    <string name="rate_app_action">Rate it!</string>
 </resources>
