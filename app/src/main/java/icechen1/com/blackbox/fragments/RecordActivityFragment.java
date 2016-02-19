@@ -162,7 +162,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     }
 
     private void revealControlPanel(boolean shouldAnimate){
-        if (shouldAnimate){
+        if (shouldAnimate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             // previously invisible view
 
             // get the center for the clipping circle
@@ -172,8 +172,8 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             int finalRadius = Math.max(mCtlPanel.getWidth(), mCtlPanel.getHeight());
 
             // create the animator for this view (the start radius is zero)
-            Animator anim =
-                    ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, 0, finalRadius);
+            Animator anim = null;
+            anim = ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, 0, finalRadius);
             anim.start();
         }
 
@@ -184,7 +184,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     }
 
     private void hideControlPanel(boolean shouldAnimate){
-        if(shouldAnimate){
+        if(shouldAnimate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
             // get the center for the clipping circle
             int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
             int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
@@ -193,8 +193,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             int initialRadius = mCtlPanel.getWidth();
 
             // create the animation (the final radius is zero)
-            Animator anim =
-                    ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, initialRadius, 0);
+            Animator anim = ViewAnimationUtils.createCircularReveal(mCtlPanel, cx, cy, initialRadius, 0);
 
             // make the view invisible when the animation is done
             anim.addListener(new AnimatorListenerAdapter() {
@@ -369,19 +368,24 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-            // Use animation position to blend colors.
-            float position = animation.getAnimatedFraction();
+                // Use animation position to blend colors.
+                float position = animation.getAnimatedFraction();
 
-            // Apply blended color to the status bar.
-            int blended = blendColors(statusBarColor, statusBarToColor, position);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getActivity().getWindow().setStatusBarColor(blended);
-            }
+                // Apply blended color to the status bar.
+                int blended = blendColors(statusBarColor, statusBarToColor, position);
 
-            // Apply blended color to the ActionBar.
-            blended = blendColors(toolbarColor, toolbarToColor, position);
-            ColorDrawable background = new ColorDrawable(blended);
-            ((RecordActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(background);
+                if(getActivity() == null){
+                    return;
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getActivity().getWindow().setStatusBarColor(blended);
+                }
+
+                // Apply blended color to the ActionBar.
+                blended = blendColors(toolbarColor, toolbarToColor, position);
+                ColorDrawable background = new ColorDrawable(blended);
+                ((RecordActivity)getActivity()).getSupportActionBar().setBackgroundDrawable(background);
             }
         });
 

@@ -7,7 +7,7 @@
     <string name="name">Name</string>
     <string name="defaut_name">Use default name</string>
     <string name="buffer_size">Buffer time</string>
-    <string name="listening">Listening...</string>
+    <string name="listening">Listening…</string>
     <string name="notif_recording_text">Currently listening. Tap for more information.</string>
     <string name="save">Save</string>
     <string name="open_inapp">Open app</string>
@@ -29,13 +29,13 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="delete_failed">Failed to delete the audio file</string>
-    <string name="share_sound">Share recording...</string>
+    <string name="share_sound">Share recording…</string>
     <string name="title_activity_preference">Settings</string>
     <string name="setting_always_on">Always on notification</string>
     <string name="setting_always_on_summary">Start recording from a notification</string>
     <string name="started_listening">Started Listening</string>
     <string name="stopped_listening">Saving Recording.</string>
-    <string name="saving_recording">Saving Recording...</string>
+    <string name="saving_recording">Saving Recording…</string>
     <string name="setting_default_length">Default buffer duration</string>
     <string name="setting_default_length_summary">How long does the recorder retain recording for</string>
     <string name="recorded_on">Recorded on %s</string>
@@ -43,4 +43,11 @@
     <string name="app_share">Share App</string>
     <string name="rate_app">Like the app?</string>
     <string name="rate_app_action">Rate it!</string>
+    <string name="setting_autostart_recording">Automatically start recording on boot</string>
+    <string name="setting_autostart_recording_summary">Start recording when phone starts up</string>
+    <string name="appwidget_start">Start</string>
+    <string name="appwidget_stop">Stop</string>
+    <string name="add_widget">Add widget</string>
+    <string name="setting_stealth_notifications">Stealth Notifications</string>
+    <string name="setting_stealth_notifications_summary">Set the recording notifications to low priority</string>
 </resources>

@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.RewindWidget;
 import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
@@ -37,6 +40,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
     int mRecordingLength;
     int mMode = MODE_START;
+    private int mPriority;
 
     @Override
     public void onCreate(){
@@ -57,6 +61,11 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
                 .getDefaultSharedPreferences(getBaseContext());
         int default_length = Integer.valueOf(getPrefs.getString("default_length", "300"));
         mRecordingLength = default_length;
+
+        mPriority = Notification.PRIORITY_MAX;
+        if (getPrefs.getBoolean("stealth_notifications", false)) {
+            mPriority = Notification.PRIORITY_MIN;
+        }
 
         Bundle extras = intent.getExtras();
         if(extras != null){
@@ -89,6 +98,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         mNotificationManager.cancel(1996); //remove passive notif
 
         EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STARTED));
+        updateWidgets(true);
     }
 
     private void stopRecording(){
@@ -98,6 +108,17 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         setUpPassiveNotification();
         //emit message
         EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STOPPED));
+        updateWidgets(false);
+    }
+
+    public void updateWidgets(boolean started) {
+        AppWidgetManager manager = AppWidgetManager.getInstance(getApplication());
+        int ids[] = manager.getAppWidgetIds(new ComponentName(getApplication(), RewindWidget.class));
+
+        // There may be multiple widgets active, so update all of them
+        for (int appWidgetId : ids) {
+            RewindWidget.updateAppWidget(this, manager, appWidgetId, started);
+        }
     }
 
     @Override
@@ -116,7 +137,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             .setContentTitle(getResources().getString(R.string.app_name))
             .setContentText(getResources().getString(R.string.saving_recording))
             .setContentIntent(activityPIntent)
-            .setPriority(Notification.PRIORITY_MAX)
+            .setPriority(mPriority)
             .build();
 
         mNotificationManager.notify(
@@ -144,7 +165,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             .setContentTitle(getResources().getString(R.string.app_name))
             .setContentText(getResources().getString(R.string.notif_recording_text))
             .setContentIntent(activityPIntent)
-            .setPriority(Notification.PRIORITY_MAX)
+            .setPriority(mPriority)
             .build();
         return notif;
     }
