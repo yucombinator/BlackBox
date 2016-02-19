@@ -4,7 +4,7 @@
     android:initialLayout="@layout/rewind_widget"
     android:minHeight="40dp"
     android:minWidth="40dp"
-    android:previewImage="@drawable/Rewind_ori_portrait"
+    android:previewImage="@drawable/rewind_ori_portrait"
     android:updatePeriodMillis="86400000"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen|keyguard"></appwidget-provider>
