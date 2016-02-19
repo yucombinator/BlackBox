@@ -142,6 +142,7 @@ public class PlayerDialogFragment extends BaseDialogFragment {
                 if(!deleted){
                     Toast.makeText(getContext(), getString(R.string.delete_failed), Toast.LENGTH_LONG).show();
                 }
+                AudioWife.getInstance().release();
                 mHasChanged = true;
                 dismiss();
             }
