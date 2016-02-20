@@ -76,7 +76,7 @@ public class AudioBufferManager extends Thread {
 
         for (int i = bufferSizes.size() - 1; i >= 0; i--) {
             try {
-                CircularByteBuffer circbuffer = tryAllocateCircularBuffer(bufferSizes.get(i).second);
+                CircularByteBuffer circbuffer = tryAllocateCircularBuffer(bufferSizes.get(i).first);
                 if(circbuffer != null) {
                     Log.i(LOG_TAG,"Final sample rate:" + bufferSizes.get(i).first + " with buffer size:"+ bufferSizes.get(i).second);
                     Log.i(LOG_TAG,"Length of time is: " + mBufferDuration + " s");
