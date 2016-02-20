@@ -99,6 +99,10 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecordingSampler.setVolumeListener(this);  // for custom implements
         mRecordingSampler.link(mVisualizerView);     // link to visualizer
 
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+        mTime = Integer.valueOf(getPrefs.getString("default_length", "300"));
+
         // This will get the radiogroup
         mRGroup = (RadioGroup)mRoot.findViewById(R.id.radio_group_time);
         // This will get the radiobutton in the radiogroup that is checked
@@ -119,9 +123,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             }
             }
         });
-        SharedPreferences getPrefs = PreferenceManager
-                .getDefaultSharedPreferences(getContext());
-        mTime = Integer.valueOf(getPrefs.getString("default_length", "300"));
 
         return mRoot;
     }
@@ -304,9 +305,11 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                     stopRecordingUI(false);
                     break;
                 case RecordStatusMessage.JUST_STARTED:
+                    setUpVisualizer(event.bufferSize);
                     startRecordingUI(true);
                     break;
                 case RecordStatusMessage.STARTED:
+                    setUpVisualizer(event.bufferSize);
                     startRecordingUI(false);
                     break;
             }
@@ -314,12 +317,18 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         });
     }
 
+    public void setUpVisualizer(int bufsize){
+        mRecordingSampler.initAudioRecord(bufsize);
+    }
+
     @Subscribe
     public void onEvent(final AudioBufferMessage event) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mRecordingSampler.process(event.bytes);
+                if (mRecordingSampler.isReady()) {
+                    mRecordingSampler.process(event.bytes);
+                }
             }
         });
     }

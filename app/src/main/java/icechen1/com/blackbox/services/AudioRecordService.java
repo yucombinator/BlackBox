@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -96,14 +97,15 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         mAudio.start();
         startForeground(1995, buildNotification());
         mNotificationManager.cancel(1996); //remove passive notif
-
-        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STARTED));
         updateWidgets(true);
     }
 
     private void stopRecording(){
-        updateSavingNotification();
-        mAudio.close();
+        if(mAudio != null) {
+            updateSavingNotification();
+            mAudio.close();
+        }
+
         //set up notif
         setUpPassiveNotification();
         //emit message
@@ -209,17 +211,26 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     }
 
     @Override
-    public void onRecordingError(Exception e) {
+    public void onRecordingError(final String s, Exception e) {
         Log.e("Rewind", "Error", e);
+        Handler h = new Handler(getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+                EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STOPPED));
+            }
+        });
         stopForeground(true);
         stopSelf();
     }
 
     @Subscribe
     public void onEvent(final GetRecordingStatusMessage event) {
-        EventBus.getDefault().post(new RecordStatusMessage(
-            (mAudio!= null && mAudio.isRecording()) ?
-            RecordStatusMessage.STARTED :
-            RecordStatusMessage.STOPPED));
+        if(mAudio != null && mAudio.isRecording()) {
+            EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.STARTED,  mAudio.getBufferSize(), mAudio.getSampleRate()));
+        } else {
+            EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.STOPPED));
+        }
     }
 }

@@ -1,15 +1,20 @@
 package icechen1.com.blackbox.audio;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Pair;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import icechen1.com.blackbox.R;
@@ -17,6 +22,7 @@ import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.DatabaseHelper;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.DatabaseUpdatedMessage;
+import icechen1.com.blackbox.messages.RecordStatusMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 
@@ -26,14 +32,16 @@ public class AudioBufferManager extends Thread {
     static String LOG_TAG = "BlackBox";
     private final OnAudioRecordStateUpdate mCallback;
     AudioRecord arecord;
-    int sampleRate;
-    static int buffersize;
+    //static int buffersize;
     private boolean started = true;
     int mBufferDuration;
+    private boolean mAllocationSuccess = false;
+    private CircularByteBuffer mCircularByteBuffer;
+    private Pair<Integer, Integer> mBufferSpec;
 
     public interface OnAudioRecordStateUpdate{
         void onRecordingSaved();
-        void onRecordingError(Exception e);
+        void onRecordingError(String s, Exception e);
     }
 
     public boolean isRecording(){
@@ -48,54 +56,93 @@ public class AudioBufferManager extends Thread {
         mCallback = l;
         mContext = cxt;
         mBufferDuration =time;
-        // Prepare the AudioRecord & AudioTrack
-        buffersize = 3584;
-        try {
-            //Find the best supported sample rate
-            for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {
-                //TODO Stereo support requires changing some buffer sizes
-                int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO , AudioFormat.ENCODING_PCM_16BIT);
-                if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
-                    // buffer size is valid, Sample rate supported
-                    sampleRate = rate;
-                    buffersize = bufferSize;
-                    Log.i(LOG_TAG,"Recording sample rate:" + sampleRate + " with buffer size:"+ buffersize);
-                }
+    }
+
+    // Since some devices run on limited memory, we want to try and create a buffer big enough and fits the best quality audio
+    // If we do not have enough memory then we want to gracefully fall to a lower quality as much as possible.
+    public void tryCreateBestBuffer() {
+        int[] sampleRates = new int[] {8000, 11025, 16000, 22050, 44100};
+
+        ArrayList<Pair<Integer, Integer>> bufferSizes = new ArrayList<>();
+        //Find the best supported sample rate given memory constraints
+        for (int rate : sampleRates) {
+            //TODO Stereo support requires changing some buffer sizes
+            int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
+                // buffer size is valid, Sample rate supported
+                bufferSizes.add(new Pair<>(rate, bufferSize));
             }
-
-            Log.i(LOG_TAG,"Final sample rate:" + sampleRate + " with buffer size:"+ buffersize);
-
-            Log.i(LOG_TAG,"Initializing Audio Record and Audio Playing objects");
-            Log.i(LOG_TAG,"Length of time is: " + mBufferDuration + " s");
-
-        } catch (Throwable t) {
-            Log.e(LOG_TAG, "Initializing Audio Record and Play objects Failed "+t.getLocalizedMessage());
         }
-        //Set up the recorder and the player
-        arecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                sampleRate, AudioFormat.CHANNEL_IN_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, buffersize * 2);
+
+        for (int i = bufferSizes.size() - 1; i >= 0; i--) {
+            try {
+                CircularByteBuffer circbuffer = tryAllocateCircularBuffer(bufferSizes.get(i).second);
+                if(circbuffer != null) {
+                    Log.i(LOG_TAG,"Final sample rate:" + bufferSizes.get(i).first + " with buffer size:"+ bufferSizes.get(i).second);
+                    Log.i(LOG_TAG,"Length of time is: " + mBufferDuration + " s");
+                    mAllocationSuccess = true;
+                    mCircularByteBuffer = circbuffer;
+                    mBufferSpec = bufferSizes.get(i);
+                    return;
+                }
+            } catch (OutOfMemoryError err) {
+                Log.e(LOG_TAG,"Failed to allocate for sample rate:" + bufferSizes.get(i).first + " with buffer size: "+ bufferSizes.get(i).second, err);
+            }
+        }
+        mAllocationSuccess = false;
     }
-/*
-    int getAudioSessionID(){
-        return atrack.getAudioSessionId();
+
+    public CircularByteBuffer tryAllocateCircularBuffer(int sampleRate){
+        int circBufferSize = sampleRate * mBufferDuration * 2; //2 is a magic number
+        return new CircularByteBuffer(circBufferSize);
     }
-    */
+
+    public int getBufferSize(){
+        return mBufferSpec.second;
+    }
+
+    public int getSampleRate(){
+        return mBufferSpec.first;
+    }
 
     @Override
     public void run() {
         android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+        // Prepare the AudioRecord & AudioTrack
+        tryCreateBestBuffer();
+
+        if (!mAllocationSuccess) {
+            //Failed to allocate memory...
+            Log.e(LOG_TAG, "tryCreateBestBuffer error");
+            if(mCallback != null){
+                mCallback.onRecordingError(mContext.getString(R.string.mem_error), null);
+            }
+            return;
+        }
+        int bufferSize = mBufferSpec.second;
+        int sampleRate = mBufferSpec.first;
+
+        //Set up the recorder
+        arecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                sampleRate, AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, bufferSize * 2);
+
         //Create our buffers
-        byte[] buffer  = new byte[buffersize];
-        //A circular buffer
-        CircularByteBuffer circBuffer = new CircularByteBuffer(sampleRate * mBufferDuration * 2);  //2 is a magic number
+        CircularByteBuffer circBuffer = mCircularByteBuffer;
+        byte[] buffer = new byte[bufferSize];
+
         arecord.startRecording();
 
         //Check if we acquired the mic
         if(arecord.getState() != AudioRecord.STATE_INITIALIZED){
             Log.e(LOG_TAG, "AudioRecord error");
+            if(mCallback != null){
+                mCallback.onRecordingError(mContext.getString(R.string.mic_error), null);
+            }
             return;
         }
+
+        EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.JUST_STARTED, bufferSize, sampleRate));
 
         int i = 0;
         //get timestamp
@@ -104,9 +151,9 @@ public class AudioBufferManager extends Thread {
         while(started && arecord.getState() == AudioRecord.STATE_INITIALIZED) {
             try {
                 //Write
-                arecord.read(buffer, 0, buffersize);
+                arecord.read(buffer, 0, bufferSize);
                 //Read the byte array data to the circular buffer
-                int inserted = circBuffer.put(buffer, 0, buffersize);
+                int inserted = circBuffer.put(buffer, 0, bufferSize);
                 if(i%3 == 0){
                     EventBus.getDefault().post(new AudioBufferMessage(buffer));
                 }
@@ -122,8 +169,16 @@ public class AudioBufferManager extends Thread {
             }
         }
 
+        // Done recording, saving data
         try {
-            AudioFileWriter writer = new AudioFileWriter(null);
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+            String path = getPrefs.getString("path", "");
+            if(path.equals("")){
+                // Default path
+                path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
+            }
+
+            AudioFileWriter writer = new AudioFileWriter(null, path);
             writer.setupHeader(arecord, circBuffer.length());
 
             arecord.stop();
@@ -153,27 +208,22 @@ public class AudioBufferManager extends Thread {
             EventBus.getDefault().post(new DatabaseUpdatedMessage());
 
         } catch (IOException e) {
-            e.printStackTrace();
             Log.e(LOG_TAG, "I/O error", e);
             if(mCallback != null){
-                mCallback.onRecordingError(e);
+                mCallback.onRecordingError(mContext.getString(R.string.io_error), e);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            Log.e(LOG_TAG, "Error", e);
             if(mCallback != null){
-                mCallback.onRecordingError(e);
+                mCallback.onRecordingError(mContext.getString(R.string.unknown_error), e);
             }
         }
-
-        Log.d(LOG_TAG, "loopback exit");
-
         if(mCallback != null){
             mCallback.onRecordingSaved();
         }
     }
     public void close() {
         started = false;
-        //arecord.release();
     }
 
 

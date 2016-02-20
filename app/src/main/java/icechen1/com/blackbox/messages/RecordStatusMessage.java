@@ -10,8 +10,16 @@ public class RecordStatusMessage {
     public static final int JUST_STOPPED = 2;
 
     public int status;
+    public int bufferSize;
+    public int sampleRate;
 
-    public RecordStatusMessage(int status){
+    public RecordStatusMessage(int status) {
         this.status = status;
+    }
+
+    public RecordStatusMessage(int status, int bufferSize, int sampleRate) {
+        this.status = status;
+        this.bufferSize = bufferSize;
+        this.sampleRate = sampleRate;
     }
 }

@@ -1,10 +1,7 @@
 package icechen1.com.blackbox.audio;
 
-import android.media.AudioRecord;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import icechen1.com.blackbox.views.VisualizerView;
 
@@ -19,7 +16,6 @@ public class RecordingSampler {
     private List<VisualizerView> mVisualizerViews = new ArrayList();
 
     public RecordingSampler() {
-        this.initAudioRecord();
     }
 
     public void link(VisualizerView visualizerView) {
@@ -34,8 +30,7 @@ public class RecordingSampler {
         return this.mIsRecording;
     }
 
-    private void initAudioRecord() {
-        int bufferSize = AudioRecord.getMinBufferSize('걄', 16, 2);
+    public void initAudioRecord(int bufferSize) {
         this.mBufSize = bufferSize;
     }
 
@@ -76,6 +71,10 @@ public class RecordingSampler {
 
     public void release() {
         this.stopRecording();
+    }
+
+    public boolean isReady() {
+        return mBufSize != 0;
     }
 
     public interface CalculateVolumeListener {

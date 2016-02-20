@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference android:title="@string/setting_always_on"
-        android:defaultValue="true"
-        android:summary="@string/setting_always_on_summary"
-        android:key="always_on_notification" />
-    <SwitchPreference android:title="@string/setting_autostart_recording"
-        android:defaultValue="false"
-        android:summary="@string/setting_autostart_recording_summary"
-        android:key="autostart_recording" />
-    <SwitchPreference android:title="@string/setting_stealth_notifications"
-        android:defaultValue="false"
-        android:summary="@string/setting_stealth_notifications_summary"
-        android:key="stealth_notifications" />
-    <ListPreference android:title="@string/setting_default_length"
-        android:defaultValue="300"
-        android:summary="@string/setting_default_length_summary"
-        android:key="default_length"
-        android:entries="@array/length_keys"
-        android:entryValues="@array/length_values"/>
+    <PreferenceCategory android:title="@string/notifications">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="always_on_notification"
+            android:summary="@string/setting_always_on_summary"
+            android:title="@string/setting_always_on" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="stealth_notifications"
+            android:summary="@string/setting_stealth_notifications_summary"
+            android:title="@string/setting_stealth_notifications" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/recording">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="autostart_recording"
+            android:summary="@string/setting_autostart_recording_summary"
+            android:title="@string/setting_autostart_recording" />
+
+        <ListPreference
+            android:defaultValue="300"
+            android:entries="@array/length_keys"
+            android:entryValues="@array/length_values"
+            android:key="default_length"
+            android:summary="@string/setting_default_length_summary"
+            android:title="@string/setting_default_length" />
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:entries="@array/length_keys"
+            android:entryValues="@array/length_values"
+            android:key="path"
+            android:summary="@string/setting_path_summary"
+            android:dialogMessage="@string/setting_path_help"
+            android:title="@string/setting_path" />
+    </PreferenceCategory>
 </PreferenceScreen>

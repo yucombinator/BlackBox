@@ -50,4 +50,13 @@
     <string name="add_widget">Add widget</string>
     <string name="setting_stealth_notifications">Stealth Notifications</string>
     <string name="setting_stealth_notifications_summary">Set the recording notifications to low priority</string>
+    <string name="mem_error">Error: Unable to reserve memory. Try again later.</string>
+    <string name="mic_error">Error: Unable to acquire microphone. Try again later.</string>
+    <string name="io_error">Read/Write Error</string>
+    <string name="unknown_error">Error occured while saving</string>
+    <string name="notifications">Notifications</string>
+    <string name="recording">Recording</string>
+    <string name="setting_path_summary">Change file path of saved recordings</string>
+    <string name="setting_path">Storage folder</string>
+    <string name="setting_path_help">Enter absolute path of the folder in which you want to save the recordings. Leave blank for default (%s)</string>
 </resources>

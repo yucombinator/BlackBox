@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
 /**
@@ -22,13 +21,21 @@ public class AudioFileWriter {
     private final BufferedOutputStream bos;
     private final DataOutputStream dos;
 
-    AudioFileWriter(String url) throws FileNotFoundException {
+    AudioFileWriter(String url, String path) throws FileNotFoundException {
         Date date = new Date();
         if(url == null){
             url = String.valueOf(date.getTime());
         }
-        final File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/");
-        dir.mkdirs(); //create folders where write files
+        File dir = new File(path);
+        boolean result = dir.mkdirs(); //create folders where write files
+
+        if(!dir.isDirectory()){
+            // Try again using defaults
+            path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
+            dir = new File(path);
+            result = dir.mkdirs();
+        }
+
         file = new File(dir, url+".wav");
         os = new FileOutputStream(file);
         bos = new BufferedOutputStream(os);
