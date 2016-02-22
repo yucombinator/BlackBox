@@ -29,6 +29,8 @@ public class CircularByteBuffer extends CustomByteBuffer
 
     private int nextPut;
 
+    private boolean adjustGet = false;
+
     @Override
     public int size()
     {
@@ -69,10 +71,15 @@ public class CircularByteBuffer extends CustomByteBuffer
             length++;
         }
         buf[nextPut++] = b;
-        nextGet++;
+
+        if(adjustGet){
+            nextGet++;
+        }
+
         if (nextPut >= size){
             nextPut = 0;
             nextGet = 0;
+            adjustGet = true;
         }
     }
 }
