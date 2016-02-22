@@ -185,14 +185,7 @@ public class AudioBufferManager extends Thread {
             arecord.release();
 
             Log.d(LOG_TAG, "buffer length " + circBuffer.length());
-
-            byte[] readbuffer = new byte[circBuffer.length()];
-            int retrieved = circBuffer.get(readbuffer, 0, circBuffer.length());
-
-            Log.d(LOG_TAG, "retrieved length " + retrieved);
-
-            writer.write(readbuffer, retrieved);
-
+            writer.writeFromCircBuffer(circBuffer);
             writer.close();
 
             long currentMillis = System.currentTimeMillis();

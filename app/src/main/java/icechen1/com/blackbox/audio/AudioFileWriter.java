@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -50,6 +51,19 @@ public class AudioFileWriter {
     void write(byte[] buffer, long size) throws IOException {
         for(int i = 0; i < size;i++) {
             dos.writeByte(buffer[i]);
+        }
+    }
+
+    void writeFromCircBuffer(CircularByteBuffer buffer) throws IOException {
+        try
+        {
+            for(int i = 0; i < buffer.size() ;i++) {
+                dos.writeByte(buffer.get());
+            }
+        }
+        catch ( EOFException e )
+        {
+            // nothing to do.
         }
     }
 

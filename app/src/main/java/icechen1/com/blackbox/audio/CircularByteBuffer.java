@@ -2,7 +2,6 @@ package icechen1.com.blackbox.audio;
 
 import java.io.EOFException;
 import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
 
 /**
  * Description of CircularByteBuffer.
@@ -70,7 +69,10 @@ public class CircularByteBuffer extends CustomByteBuffer
             length++;
         }
         buf[nextPut++] = b;
-        if (nextPut >= size)
+        nextGet++;
+        if (nextPut >= size){
             nextPut = 0;
+            nextGet = 0;
+        }
     }
 }
