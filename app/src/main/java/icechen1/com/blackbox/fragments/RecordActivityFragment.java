@@ -108,7 +108,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         // This will get the radiobutton in the radiogroup that is checked
         mCheckedRadioButton = (RadioButton)mRGroup.findViewById(mRGroup.getCheckedRadioButtonId());
         setDefaultChecked();
-        getTime(mCheckedRadioButton);
 
         // This overrides the radiogroup onCheckListener
         mRGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
