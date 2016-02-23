@@ -27,6 +27,8 @@ import icechen1.com.blackbox.audio.AudioBufferManager;
 import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
 
+import static humanize.Humanize.duration;
+
 
 /**
  * Created by yuchen.hou on 15-06-27.
@@ -63,9 +65,9 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         int default_length = Integer.valueOf(getPrefs.getString("default_length", "300"));
         mRecordingLength = default_length;
 
-        mPriority = Notification.PRIORITY_MAX;
+        mPriority = NotificationCompat.PRIORITY_MAX;
         if (getPrefs.getBoolean("stealth_notifications", false)) {
-            mPriority = Notification.PRIORITY_MIN;
+            mPriority = NotificationCompat.PRIORITY_MIN;
         }
 
         Bundle extras = intent.getExtras();
@@ -157,18 +159,20 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
         //TODO Android wear support
         Notification notif = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.ic_mic_white_36dp)
-            .setUsesChronometer(true)
-            .addAction(R.drawable.ic_save_white_24dp, getResources().getString(R.string.save), stopPIntent)
-            .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
-            .setTicker(getResources().getString(R.string.notif_recording_text))
-            //.setSubText(getResources().getString(R.string.notif_recording_text))
-            .setWhen(System.currentTimeMillis())
-            .setContentTitle(getResources().getString(R.string.app_name))
-            .setContentText(getResources().getString(R.string.notif_recording_text))
-            .setContentIntent(activityPIntent)
-            .setPriority(mPriority)
-            .build();
+                .setSmallIcon(R.drawable.ic_mic_white_36dp)
+                .setUsesChronometer(true)
+                .addAction(R.drawable.ic_save_white_24dp, getResources().getString(R.string.save), stopPIntent)
+                .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
+                .setTicker(getResources().getString(R.string.notif_recording_text, duration(mRecordingLength)))
+                //.setSubText(getResources().getString(R.string.notif_recording_text))
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.notif_recording_text, duration(mRecordingLength)))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(getResources().getString(R.string.notif_recording_text, duration(mRecordingLength))))
+                .setContentIntent(activityPIntent)
+                .setPriority(mPriority)
+                .build();
         return notif;
     }
 

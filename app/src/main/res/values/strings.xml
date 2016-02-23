@@ -8,7 +8,7 @@
     <string name="defaut_name">Use default name</string>
     <string name="buffer_size">Buffer time</string>
     <string name="listening">Listening…</string>
-    <string name="notif_recording_text">Currently listening. Tap for more information.</string>
+    <string name="notif_recording_text">Currently listening to the last %s. Tap for more information.</string>
     <string name="save">Save</string>
     <string name="open_inapp">Open app</string>
     <string name="start_listening">Start listening</string>
