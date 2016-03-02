@@ -309,6 +309,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 emailIntent.setData(Uri.parse("mailto: me+rewind@yuchenhou.com"));
                 startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.feature_recommendations)));
                 return true;
+            case R.id.menu_app_rate:
+                String packageName = getPackageName();
+                Uri uri = Uri.parse("market://details?id=" + packageName);
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                return true;
         }
         return false;
     }

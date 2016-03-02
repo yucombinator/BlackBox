@@ -59,4 +59,7 @@
     <string name="setting_path_summary">Change file path of saved recordings</string>
     <string name="setting_path">Storage folder</string>
     <string name="setting_path_help">Enter absolute path of the folder in which you want to save the recordings. Leave blank for default (%s)</string>
+    <string name="setting_shake_recording_summary">Start recording by sharing the phone or tablet</string>
+    <string name="setting_shake_recording">Shake activation</string>
+    <string name="app_rate">Rate the app!</string>
 </resources>

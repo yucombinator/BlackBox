@@ -20,6 +20,12 @@
             android:summary="@string/setting_autostart_recording_summary"
             android:title="@string/setting_autostart_recording" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="should_detect_shake"
+            android:summary="@string/setting_shake_recording_summary"
+            android:title="@string/setting_shake_recording" />
+
         <ListPreference
             android:defaultValue="300"
             android:entries="@array/length_keys"

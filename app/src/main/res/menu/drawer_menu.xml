@@ -18,5 +18,10 @@
             android:id="@+id/menu_suggestions"
             android:icon="@drawable/ic_favorite_black_24dp"
             android:title="@string/feature_recommendations" />
+
+        <item
+            android:id="@+id/menu_app_rate"
+            android:icon="@drawable/ic_star_rate_black_36dp"
+            android:title="@string/app_rate" />
     </group>
 </menu>

@@ -9,6 +9,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +17,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.squareup.seismic.ShakeDetector;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,7 +36,7 @@ import static humanize.Humanize.duration;
 /**
  * Created by yuchen.hou on 15-06-27.
  */
-public class AudioRecordService extends Service implements AudioBufferManager.OnAudioRecordStateUpdate {
+public class AudioRecordService extends Service implements AudioBufferManager.OnAudioRecordStateUpdate, ShakeDetector.Listener {
     public static final int MODE_START = 1;
     public static final int MODE_STOP = 2;
     public static final int MODE_SET_PASSIVE_NOTIF = 3;
@@ -44,6 +47,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     int mRecordingLength;
     int mMode = MODE_START;
     private int mPriority;
+    private ShakeDetector mShakeDetector;
 
     @Override
     public void onCreate(){
@@ -86,6 +90,12 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             setUpPassiveNotification();
         }
 
+        if(getPrefs.getBoolean("should_detect_shake", false)) {
+            setUpShake();
+        } else {
+            stopShake();
+        }
+
         return Service.START_STICKY;
     }
 
@@ -94,7 +104,15 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         return null;
     }
 
-    private void startRecording(){
+    private void startRecordingIfNotAlready() {
+        if(mAudio != null && !mAudio.isRecording()) {
+            startRecording();
+        } else {
+            startRecording();
+        }
+    }
+
+    private void startRecording() {
         mAudio = new AudioBufferManager(this, mRecordingLength, this);
         mAudio.start();
         startForeground(1995, buildNotification());
@@ -102,7 +120,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         updateWidgets(true);
     }
 
-    private void stopRecording(){
+    private void stopRecording() {
         if(mAudio != null) {
             updateSavingNotification();
             mAudio.close();
@@ -127,7 +145,9 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
     @Override
     public void onDestroy(){
+        stopShake();
         stopForeground(true);
+        super.onDestroy();
     }
 
     private void updateSavingNotification(){
@@ -237,5 +257,27 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         } else {
             EventBus.getDefault().post(new RecordStatusMessage(RecordStatusMessage.STOPPED));
         }
+    }
+
+    private void setUpShake() {
+        if(mShakeDetector != null) {
+            return;
+        }
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
+        mShakeDetector = new ShakeDetector(this);
+        mShakeDetector.start(sensorManager);
+    }
+
+    private void stopShake() {
+        if (mShakeDetector != null) {
+            mShakeDetector.stop();
+            mShakeDetector = null;
+        }
+    }
+
+    @Override
+    public void hearShake() {
+        startRecordingIfNotAlready();
     }
 }

@@ -8,8 +8,8 @@ android {
         applicationId "icechen1.com.blackbox"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 11
-        versionName "1.0.9"
+        versionCode 12
+        versionName "1.1.0"
     }
     buildTypes {
         release {
@@ -45,6 +45,7 @@ dependencies {
     compile 'com.gregacucnik:edittextview:1.2'
     compile 'com.github.AndroidDeveloperLB:MaterialPreferenceLibrary:5'
     compile 'com.github.paolorotolo:appintro:3.3.0'
+    compile 'com.squareup:seismic:1.0.2'
 }
 buildscript {
     repositories {

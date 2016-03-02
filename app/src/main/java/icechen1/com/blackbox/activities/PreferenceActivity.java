@@ -27,10 +27,21 @@ public class PreferenceActivity extends com.lb.material_preferences_library.Pref
         themeListPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-            Intent i = new Intent(PreferenceActivity.this, AudioRecordService.class);
-            i.putExtra("mode", AudioRecordService.MODE_SET_PASSIVE_NOTIF);
-            startService(i);
-            return true;
+                Intent i = new Intent(PreferenceActivity.this, AudioRecordService.class);
+                i.putExtra("mode", AudioRecordService.MODE_SET_PASSIVE_NOTIF);
+                startService(i);
+                return true;
+            }
+        });
+
+        //-- RESET SERVICE
+        SwitchPreference shakePreference = (SwitchPreference)findPreference("should_detect_shake");
+        shakePreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Intent i = new Intent(PreferenceActivity.this, AudioRecordService.class);
+                startService(i);
+                return true;
             }
         });
 
