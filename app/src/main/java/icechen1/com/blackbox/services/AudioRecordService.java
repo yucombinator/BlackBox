@@ -193,16 +193,17 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
         //TODO Android wear support
         Notification notif = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.ic_mic_white_36dp)
-            .addAction(R.drawable.ic_save_white_24dp, getResources().getString(R.string.start_listening), startPIntent)
-            .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
-            .setTicker(getResources().getString(R.string.notif_ready))
-                    //.setSubText(getResources().getString(R.string.notif_recording_text))
-            .setContentTitle(getResources().getString(R.string.app_name))
-            .setContentText(getResources().getString(R.string.notif_ready))
-            .setContentIntent(activityPIntent)
-            .setPriority(Notification.PRIORITY_MIN)
-            .build();
+                .setSmallIcon(R.drawable.ic_mic_white_36dp)
+                .addAction(R.drawable.ic_save_white_24dp, getResources().getString(R.string.start_listening), startPIntent)
+                .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
+                .setTicker(getResources().getString(R.string.notif_ready))
+                        //.setSubText(getResources().getString(R.string.notif_recording_text))
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.notif_ready))
+                .setContentIntent(activityPIntent)
+                .setPriority(Notification.PRIORITY_MIN)
+                .setOngoing(true)
+                .build();
         mNotificationManager.notify(1996,notif);
     }
 
