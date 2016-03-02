@@ -58,10 +58,12 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        /*
         if(intent == null) {
             stopSelf();
             return Service.START_NOT_STICKY;
         }
+        */
 
         //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         SharedPreferences getPrefs = PreferenceManager
@@ -82,11 +84,10 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         if(mMode == MODE_START){
             Toast.makeText(this, getResources().getString(R.string.started_listening), Toast.LENGTH_SHORT).show();
             startRecording();
-        }
-        else if (mMode == MODE_STOP){
+        } else if (mMode == MODE_STOP){
             Toast.makeText(this, getResources().getString(R.string.stopped_listening), Toast.LENGTH_SHORT).show();
             stopRecording();
-        }else if(mMode == MODE_SET_PASSIVE_NOTIF){
+        } else if(mMode == MODE_SET_PASSIVE_NOTIF){
             setUpPassiveNotification();
         }
 
@@ -155,14 +156,14 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         PendingIntent activityPIntent = PendingIntent.getActivity(this, 0, activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notif = new NotificationCompat.Builder(this)
-            .setSmallIcon(R.drawable.ic_mic_white_36dp)
-            .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
-            .setTicker(getResources().getString(R.string.saving_recording))
-            .setContentTitle(getResources().getString(R.string.app_name))
-            .setContentText(getResources().getString(R.string.saving_recording))
-            .setContentIntent(activityPIntent)
-            .setPriority(mPriority)
-            .build();
+                .setSmallIcon(R.drawable.ic_mic_white_36dp)
+                .addAction(R.drawable.ic_more_horiz_white_24dp, getResources().getString(R.string.open_inapp), activityPIntent)
+                .setTicker(getResources().getString(R.string.saving_recording))
+                .setContentTitle(getResources().getString(R.string.app_name))
+                .setContentText(getResources().getString(R.string.saving_recording))
+                .setContentIntent(activityPIntent)
+                .setPriority(mPriority)
+                .build();
 
         mNotificationManager.notify(
                 1995,
@@ -231,7 +232,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     public void onRecordingSaved() {
         if(mAudio == null || !mAudio.isRecording()){
             stopForeground(true);
-            stopSelf();
+            //stopSelf();
         }
     }
 
@@ -247,7 +248,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             }
         });
         stopForeground(true);
-        stopSelf();
+        //stopSelf();
     }
 
     @Subscribe

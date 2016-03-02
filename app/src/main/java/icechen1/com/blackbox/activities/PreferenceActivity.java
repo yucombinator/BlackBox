@@ -40,6 +40,7 @@ public class PreferenceActivity extends com.lb.material_preferences_library.Pref
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 Intent i = new Intent(PreferenceActivity.this, AudioRecordService.class);
+                i.putExtra("mode", AudioRecordService.MODE_SET_PASSIVE_NOTIF);
                 startService(i);
                 return true;
             }
