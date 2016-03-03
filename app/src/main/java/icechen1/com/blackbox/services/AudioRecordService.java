@@ -58,12 +58,6 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        /*
-        if(intent == null) {
-            stopSelf();
-            return Service.START_NOT_STICKY;
-        }
-        */
 
         //Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         SharedPreferences getPrefs = PreferenceManager
@@ -76,19 +70,21 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             mPriority = NotificationCompat.PRIORITY_MIN;
         }
 
-        Bundle extras = intent.getExtras();
-        if(extras != null){
-            mMode = extras.getInt("mode", MODE_START); //in seconds
-            mRecordingLength = extras.getInt("length", default_length); //in seconds
-        }
-        if(mMode == MODE_START){
-            Toast.makeText(this, getResources().getString(R.string.started_listening), Toast.LENGTH_SHORT).show();
-            startRecording();
-        } else if (mMode == MODE_STOP){
-            Toast.makeText(this, getResources().getString(R.string.stopped_listening), Toast.LENGTH_SHORT).show();
-            stopRecording();
-        } else if(mMode == MODE_SET_PASSIVE_NOTIF){
-            setUpPassiveNotification();
+        if(intent != null) {
+            Bundle extras = intent.getExtras();
+            if(extras != null){
+                mMode = extras.getInt("mode", MODE_START); //in seconds
+                mRecordingLength = extras.getInt("length", default_length); //in seconds
+                if(mMode == MODE_START){
+                    Toast.makeText(this, getResources().getString(R.string.started_listening), Toast.LENGTH_SHORT).show();
+                    startRecording();
+                } else if (mMode == MODE_STOP){
+                    Toast.makeText(this, getResources().getString(R.string.stopped_listening), Toast.LENGTH_SHORT).show();
+                    stopRecording();
+                } else if(mMode == MODE_SET_PASSIVE_NOTIF){
+                    setUpPassiveNotification();
+                }
+            }
         }
 
         if(getPrefs.getBoolean("should_detect_shake", false)) {

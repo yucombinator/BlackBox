@@ -53,13 +53,13 @@
     <string name="mem_error">Error: Unable to reserve memory. Try again later.</string>
     <string name="mic_error">Error: Unable to acquire microphone. Try again later.</string>
     <string name="io_error">Read/Write Error</string>
-    <string name="unknown_error">Error occured while saving</string>
+    <string name="unknown_error">Error occurred while saving</string>
     <string name="notifications">Notifications</string>
     <string name="recording">Recording</string>
     <string name="setting_path_summary">Change file path of saved recordings</string>
     <string name="setting_path">Storage folder</string>
     <string name="setting_path_help">Enter absolute path of the folder in which you want to save the recordings. Leave blank for default (%s)</string>
-    <string name="setting_shake_recording_summary">Start recording by sharing the phone or tablet</string>
+    <string name="setting_shake_recording_summary">Start recording by shaking the phone or tablet</string>
     <string name="setting_shake_recording">Shake activation</string>
     <string name="app_rate">Rate the app!</string>
 </resources>
