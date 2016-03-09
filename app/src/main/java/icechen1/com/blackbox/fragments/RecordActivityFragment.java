@@ -254,7 +254,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void startRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
-        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
         i.putExtra("mode", AudioRecordService.MODE_START);
         i.putExtra("length", mTime);
         getActivity().startService(i);
@@ -263,7 +262,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
     private void stopRecording(){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
-        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_48dp));
         i.putExtra("mode", AudioRecordService.MODE_STOP);
         getActivity().startService(i);
         //stopRecordingUI();
@@ -275,6 +273,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecording = false;
         mListeningCard.setVisibility(View.GONE);
         mStartListeningCard.setVisibility(View.VISIBLE);
+        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_48dp));
         //stopVisual();
     }
 
@@ -283,6 +282,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         tintSystemBarsForStartRecord();
         mStartListeningCard.setVisibility(View.GONE);
         mListeningCard.setVisibility(View.VISIBLE);
+        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
         mRecording = true;
     }
 

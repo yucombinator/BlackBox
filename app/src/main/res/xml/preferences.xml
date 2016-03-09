@@ -26,6 +26,12 @@
             android:summary="@string/setting_shake_recording_summary"
             android:title="@string/setting_shake_recording" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="should_detect_phone"
+            android:summary="@string/setting_phone_recording_summary"
+            android:title="@string/setting_phone_recording" />
+
         <ListPreference
             android:defaultValue="300"
             android:entries="@array/length_keys"

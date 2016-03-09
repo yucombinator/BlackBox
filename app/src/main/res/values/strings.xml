@@ -62,4 +62,6 @@
     <string name="setting_shake_recording_summary">Start recording by shaking the phone or tablet</string>
     <string name="setting_shake_recording">Shake activation</string>
     <string name="app_rate">Rate the app!</string>
+    <string name="setting_phone_recording">Phone recorder support</string>
+    <string name="setting_phone_recording_summary">Stop recording when in a phone call</string>
 </resources>

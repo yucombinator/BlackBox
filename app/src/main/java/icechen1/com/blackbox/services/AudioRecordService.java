@@ -15,6 +15,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -48,6 +50,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     int mMode = MODE_START;
     private int mPriority;
     private ShakeDetector mShakeDetector;
+    private TelephoneListener mTelephoneListener = new TelephoneListener();
 
     @Override
     public void onCreate(){
@@ -93,7 +96,18 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
             stopShake();
         }
 
+        if(getPrefs.getBoolean("should_detect_phone", true)) {
+            setUpPhoneStateListener();
+        } else {
+            stopPhoneStateListener();
+        }
+
         return Service.START_STICKY;
+    }
+
+    private void setUpPhoneStateListener() {
+        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mTelephonyManager.listen(mTelephoneListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
@@ -143,8 +157,14 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     @Override
     public void onDestroy(){
         stopShake();
+        stopPhoneStateListener();
         stopForeground(true);
         super.onDestroy();
+    }
+
+    private void stopPhoneStateListener() {
+        TelephonyManager mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        mTelephonyManager.listen(mTelephoneListener, PhoneStateListener.LISTEN_NONE);
     }
 
     private void updateSavingNotification(){
@@ -276,5 +296,30 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     @Override
     public void hearShake() {
         startRecordingIfNotAlready();
+    }
+
+    class TelephoneListener extends PhoneStateListener {
+        boolean suspended = false;
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            super.onCallStateChanged(state, incomingNumber);
+            switch (state) {
+                case TelephonyManager.CALL_STATE_IDLE:
+                    if(suspended) {
+                        startRecording();
+                        suspended = false;
+                    }
+                    break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                case TelephonyManager.CALL_STATE_RINGING:
+                    if(mAudio != null && mAudio.isRecording()){
+                        suspended = true;
+                        stopRecording();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
