@@ -5,11 +5,15 @@
         <item>5 mins</item>
         <item>10 mins</item>
         <item>30 mins</item>
+        <item>1 hr</item>
+        <item>3 hrs</item>
     </string-array>
     <string-array name="length_values">
         <item>60</item>
         <item>300</item>
         <item>600</item>
         <item>1800</item>
+        <item>3600</item>
+        <item>10800</item>
     </string-array>
 </resources>

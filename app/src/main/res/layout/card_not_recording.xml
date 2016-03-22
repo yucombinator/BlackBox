@@ -27,33 +27,54 @@
             android:fontFamily="sans-serif-condensed"
             android:textColor="@color/gray"
             />
-    <RadioGroup
-        android:id="@+id/radio_group_time"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
-        <RadioButton android:id="@+id/time_1_minute"
-            android:layout_width="wrap_content"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioGroup
+            android:id="@+id/radio_group_time"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/time_1_minute"
-            style="@style/Base.Theme.AppCompat.Light"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <RadioButton android:id="@+id/time_1_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_1_minute"
+                style="@style/Base.Theme.AppCompat.Light"
+                />
+            <RadioButton android:id="@+id/time_5_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/time_5_minutes"
+                />
+            <RadioButton android:id="@+id/time_10_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_10_minutes"
+                />
+            <RadioButton android:id="@+id/time_30_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_30_minutes"
+                />
+            <RadioButton android:id="@+id/time_60_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_60_minutes"
+                android:drawablePadding="4dp"
+                android:drawableRight="@drawable/ic_lock_outline_grey_600_18dp"
+                android:drawableEnd="@drawable/ic_lock_outline_grey_600_18dp"
             />
-        <RadioButton android:id="@+id/time_5_minutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/time_5_minutes"
-            />
-        <RadioButton android:id="@+id/time_10_minutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_10_minutes"
-            />
-        <RadioButton android:id="@+id/time_30_minutes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_30_minutes"
-            />
-    </RadioGroup>
+            <RadioButton android:id="@+id/time_180_minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_180_minutes"
+                android:drawablePadding="4dp"
+                android:drawableRight="@drawable/ic_lock_outline_grey_600_18dp"
+                android:drawableEnd="@drawable/ic_lock_outline_grey_600_18dp"
+                />
+        </RadioGroup>
+    </HorizontalScrollView>
+
 </LinearLayout>

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import icechen1.com.blackbox.AppConstants;
+
 /**
  * Created by yuchen.hou on 15-07-11.
  */
@@ -15,8 +17,13 @@ public class AppUtils {
         return diff <= maxTime ? diff : maxTime;
     }
 
-    private final static int DAYS_UNTIL_PROMPT = 1;
+    private final static int DAYS_UNTIL_PROMPT = 0;
     private final static int LAUNCHES_UNTIL_PROMPT = 3;
+
+    public static boolean isPremium(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(AppConstants.IAP_PREF, false);
+    }
 
     public static boolean shouldLaunchAppRater(Context mContext) {
         SharedPreferences prefs = PreferenceManager

@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 
 import java.io.File;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.services.AudioRecordService;
 
 public class PreferenceActivity extends com.lb.material_preferences_library.PreferenceActivity {
@@ -42,6 +44,22 @@ public class PreferenceActivity extends com.lb.material_preferences_library.Pref
                 Intent i = new Intent(PreferenceActivity.this, AudioRecordService.class);
                 i.putExtra("mode", AudioRecordService.MODE_SET_PASSIVE_NOTIF);
                 startService(i);
+                return true;
+            }
+        });
+
+        //-- Buffer Default Duration
+        ListPreference durationPreference = (ListPreference)findPreference("default_length");
+        durationPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if (newValue instanceof String && !AppUtils.isPremium(PreferenceActivity.this)) {
+                    if (Integer.valueOf((String) newValue) > 1800) {
+                        Intent i = new Intent(PreferenceActivity.this, PremiumActivity.class);
+                        startActivity(i);
+                        return false;
+                    }
+                }
                 return true;
             }
         });

@@ -17,6 +17,9 @@
     <string name="time_5_minutes">5 mins</string>
     <string name="time_10_minutes">10 mins</string>
     <string name="time_30_minutes">30 mins</string>
+    <string name="time_60_minutes">1 hr</string>
+    <string name="time_180_minutes">3 hrs</string>
+
     <string name="search">Search</string>
     <string name="recent">Recent</string>
     <string name="favorites">Favorites</string>
@@ -64,4 +67,12 @@
     <string name="app_rate">Rate the app!</string>
     <string name="setting_phone_recording">Phone recorder support</string>
     <string name="setting_phone_recording_summary">Stop recording when in a phone call</string>
+
+    <string name="title_activity_premium">Unlock Rewind</string>
+    <string name="premium_title">Unlock Rewind</string>
+    <string name="premium_description">Unlock longer buffer times, and other features to come.</string>
+    <string name="unlock_now">Unlock now</string>
+    <string name="thank_you_premium">Thanks for unlocking Rewind!</string>
+    <string name="no_iap_service">Unable to load Rewind unlock information. Do you have the Play Store installed?</string>
+
 </resources>

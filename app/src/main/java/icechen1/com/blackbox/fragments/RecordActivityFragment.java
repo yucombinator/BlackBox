@@ -28,8 +28,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.activities.PremiumActivity;
 import icechen1.com.blackbox.activities.RecordActivity;
 import icechen1.com.blackbox.audio.RecordingSampler;
+import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.messages.AudioBufferMessage;
 import icechen1.com.blackbox.messages.GetRecordingStatusMessage;
 import icechen1.com.blackbox.messages.RecordStatusMessage;
@@ -83,7 +85,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                 } else {
                     stopRecording();
                 }
-                vib.vibrate(150);
+                vib.vibrate(25);
             }
         });
 
@@ -99,7 +101,7 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecordingSampler.setVolumeListener(this);  // for custom implements
         mRecordingSampler.link(mVisualizerView);     // link to visualizer
 
-        SharedPreferences getPrefs = PreferenceManager
+        final SharedPreferences getPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
         mTime = Integer.valueOf(getPrefs.getString("default_length", "300"));
 
@@ -119,6 +121,12 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             // If the radiobutton that has changed in check state is now checked...
             if (isChecked) {
                 getTime(mCheckedRadioButton);
+                if(mTime > 1800 && !AppUtils.isPremium(getContext())) {
+                    //Needs premium
+                    startActivity(new Intent(getContext(), PremiumActivity.class));
+                    mTime = Integer.valueOf(getPrefs.getString("default_length", "300"));
+                    setDefaultChecked();
+                }
             }
             }
         });
@@ -141,6 +149,12 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             case 30 * 60:
                 mRGroup.check(R.id.time_30_minutes);
                 break;
+            case 60 * 60:
+                mRGroup.check(R.id.time_60_minutes);
+                break;
+            case 3 * 60 * 60:
+                mRGroup.check(R.id.time_180_minutes);
+                break;
         }
     }
 
@@ -157,6 +171,12 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                 break;
             case R.id.time_30_minutes :
                 mTime = 30 * 60;
+                break;
+            case R.id.time_60_minutes :
+                mTime = 60 * 60;
+                break;
+            case R.id.time_180_minutes :
+                mTime = 3 * 60 * 60;
                 break;
         }
     }
