@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import icechen1.com.blackbox.AppConstants;
 import icechen1.com.blackbox.R;
+import icechen1.com.blackbox.SecureConstants;
 import icechen1.com.blackbox.common.AppUtils;
 
 public class PremiumActivity extends AppCompatActivity implements BillingProcessor.IBillingHandler {
@@ -51,7 +52,7 @@ public class PremiumActivity extends AppCompatActivity implements BillingProcess
                         }
                     }).show();
         } else {
-            mBillingProcessor = new BillingProcessor(this, null, this);
+            mBillingProcessor = new BillingProcessor(this, SecureConstants.PUB_KEY, this);
             mBillingProcessor.loadOwnedPurchasesFromGoogle();
         }
 
@@ -76,8 +77,7 @@ public class PremiumActivity extends AppCompatActivity implements BillingProcess
 
     @Override
     public void onProductPurchased(String productId, TransactionDetails details) {
-        //mBillingProcessor.isValidTransactionDetails(details)
-        if(productId.equals(AppConstants.APP_IAP_ID)) {
+        if(mBillingProcessor.isValidTransactionDetails(details) && productId.equals(AppConstants.APP_IAP_ID)) {
             savePurchase();
         }
     }
