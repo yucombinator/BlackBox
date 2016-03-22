@@ -8,8 +8,8 @@ android {
         applicationId "icechen1.com.blackbox"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 16
-        versionName "1.1.4"
+        versionCode 18
+        versionName "1.1.5"
     }
     buildTypes {
         release {

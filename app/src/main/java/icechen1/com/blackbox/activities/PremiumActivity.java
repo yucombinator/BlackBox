@@ -60,7 +60,6 @@ public class PremiumActivity extends AppCompatActivity implements BillingProcess
             mPremiumDescriptionText.setText(getString(R.string.thank_you_premium));
             mPurchaseBtn.setVisibility(View.GONE);
         }
-        mBillingProcessor.consumePurchase(AppConstants.APP_IAP_ID);
     }
 
     @OnClick(R.id.purchase_btn)
