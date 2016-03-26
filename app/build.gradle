@@ -8,8 +8,8 @@ android {
         applicationId "icechen1.com.blackbox"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 18
-        versionName "1.1.5"
+        versionCode 19
+        versionName "1.1.6"
     }
     buildTypes {
         release {
@@ -48,6 +48,7 @@ dependencies {
     compile 'com.squareup:seismic:1.0.2'
     compile 'com.anjlab.android.iab.v3:library:1.0.+'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.github.Angtrim:Android-Five-Stars-Library:v3.1'
 
 }
 buildscript {

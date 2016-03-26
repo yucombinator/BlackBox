@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -35,9 +34,9 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
+import angtrim.com.fivestarslibrary.FiveStarsDialog;
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.adapter.RecordingAdapter;
-import icechen1.com.blackbox.common.AppUtils;
 import icechen1.com.blackbox.common.NavigationDrawerUtil;
 import icechen1.com.blackbox.fragments.MainActivityFragment;
 import icechen1.com.blackbox.views.SearchView;
@@ -96,7 +95,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showAppRate() {
-        if(!AppUtils.shouldLaunchAppRater(this)){
+        FiveStarsDialog fiveStarsDialog = new FiveStarsDialog(this,"me+rewind@yuchenhou.com");
+        fiveStarsDialog.setRateText(getString(R.string.rate_app))
+                .setTitle(getString(R.string.rate_app_title))
+                .setForceMode(false)
+                .setUpperBound(4) // Market opened if a rating >= 4 is selected
+                .showAfter(4);
+        /* if(!AppUtils.shouldLaunchAppRater(this)){
             return;
         }
         Snackbar.make(mCoordinatorLayout, getString(R.string.rate_app), Snackbar.LENGTH_LONG)
@@ -106,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=icechen1.com.blackbox")));
                 }
             }).show();
+        */
     }
 
     private void runAppIntro() {

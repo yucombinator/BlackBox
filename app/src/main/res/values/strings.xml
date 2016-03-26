@@ -44,8 +44,8 @@
     <string name="recorded_on">Recorded on %s</string>
     <string name="feature_recommendations">Suggestions</string>
     <string name="app_share">Share App</string>
-    <string name="rate_app">Like the app?</string>
-    <string name="rate_app_action">Rate it!</string>
+    <string name="rate_app">How would you rate Rewind?</string>
+    <string name="rate_app_title">App feedback</string>
     <string name="setting_autostart_recording">Automatically start recording on boot</string>
     <string name="setting_autostart_recording_summary">Start recording when phone starts up</string>
     <string name="appwidget_start">Start</string>

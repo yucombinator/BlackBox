@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/set_fav_btn"
-            android:src="@drawable/ic_favorite_black_36dp"
+            android:src="@drawable/ic_favorite_outline_black_36dp"
             android:tint="@color/accent"
             style="?android:attr/borderlessButtonStyle"
             />
@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/unset_fav_btn"
-            android:src="@drawable/ic_favorite_outline_black_36dp"
+            android:src="@drawable/ic_favorite_black_36dp"
             android:tint="@color/accent"
             style="?android:attr/borderlessButtonStyle"
             android:visibility="gone"
