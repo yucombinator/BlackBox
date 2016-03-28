@@ -14,7 +14,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Title"
         android:id="@+id/title"
-        android:paddingLeft="@dimen/activity_horizontal_margin"/>
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_toLeftOf="@+id/length"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
