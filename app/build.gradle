@@ -8,8 +8,8 @@ android {
         applicationId "icechen1.com.blackbox"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 19
-        versionName "1.1.6"
+        versionCode 21
+        versionName "1.1.8"
     }
     buildTypes {
         release {
@@ -29,13 +29,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.+'
     compile 'com.android.support:design:23.2.+'
     compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
     compile 'com.android.support:recyclerview-v7:23.2.+'
     compile 'com.android.support:cardview-v7:23.2.+'
     compile 'com.tyorikan:voice-recording-visualizer:1.0.3@aar'
     compile 'com.github.mfornos:humanize-slim:1.2.2'
     compile 'com.github.ppamorim:cult:0.1.5'
-    compile 'com.melnykov:floatingactionbutton:1.3.0'
     compile 'com.ogaclejapan.smarttablayout:library:1.1.3@aar'
     compile 'com.ogaclejapan.smarttablayout:utils-v4:1.1.3@aar'
     compile 'com.malinskiy:superrecyclerview:1.1.0'

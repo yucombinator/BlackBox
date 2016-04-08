@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import icechen1.com.blackbox.AppConstants;
+import icechen1.com.blackbox.BuildConfig;
 
 /**
  * Created by yuchen.hou on 15-07-11.
@@ -21,6 +22,10 @@ public class AppUtils {
     private final static int LAUNCHES_UNTIL_PROMPT = 3;
 
     public static boolean isPremium(Context context) {
+        if(BuildConfig.DEBUG) {
+            return true;
+        }
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(AppConstants.IAP_PREF, false);
     }

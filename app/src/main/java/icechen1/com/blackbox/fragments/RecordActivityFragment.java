@@ -45,7 +45,6 @@ import static humanize.Humanize.duration;
 public class RecordActivityFragment extends Fragment implements RecordingSampler.CalculateVolumeListener {
 
     private View mRoot;
-    private View mFab;
     private FloatingActionButton mFabBtn;
     private boolean mRecording = false;
     private View mCtlPanel;
@@ -73,7 +72,6 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
                              Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.fragment_record, container, false);
         mCtlPanel = mRoot.findViewById(R.id.control_panel);
-        mFab = mRoot.findViewById(R.id.fabProgressCircle);
         mFabBtn = (FloatingActionButton) mRoot.findViewById(R.id.fab);
 
         final Vibrator vib = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -186,8 +184,8 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             // previously invisible view
 
             // get the center for the clipping circle
-            int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
-            int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
+            int cx = (int) mFabBtn.getX() + mFabBtn.getWidth()  / 2;
+            int cy = (int) mFabBtn.getY() + mFabBtn.getHeight()  / 2;
             // get the final radius for the clipping circle
             int finalRadius = Math.max(mCtlPanel.getWidth(), mCtlPanel.getHeight());
 
@@ -199,15 +197,15 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
         // make the view visible and start the animation
         mCtlPanel.setVisibility(View.VISIBLE);
-        mFab.bringToFront();
+        mFabBtn.bringToFront();
         mDuration.setText(duration(mTime));
     }
 
     private void hideControlPanel(boolean shouldAnimate){
         if(shouldAnimate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
             // get the center for the clipping circle
-            int cx = (int) mFab.getX() + mFab.getWidth()  / 2;
-            int cy = (int) mFab.getY() + mFab.getHeight()  / 2;
+            int cx = (int) mFabBtn.getX() + mFabBtn.getWidth()  / 2;
+            int cy = (int) mFabBtn.getY() + mFabBtn.getHeight()  / 2;
 
             // get the initial radius for the clipping circle
             int initialRadius = mCtlPanel.getWidth();
@@ -293,8 +291,9 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecording = false;
         mListeningCard.setVisibility(View.GONE);
         mStartListeningCard.setVisibility(View.VISIBLE);
-        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_48dp));
-        //stopVisual();
+        mStartListeningCard.bringToFront();
+        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_24dp));
+        mFabBtn.bringToFront();
     }
 
     private void startRecordingUI(boolean shouldAnimate){
@@ -302,7 +301,9 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         tintSystemBarsForStartRecord();
         mStartListeningCard.setVisibility(View.GONE);
         mListeningCard.setVisibility(View.VISIBLE);
+        mListeningCard.bringToFront();
         mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
+        mFabBtn.bringToFront();
         mRecording = true;
     }
 

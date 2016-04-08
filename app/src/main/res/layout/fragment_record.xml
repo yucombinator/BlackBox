@@ -48,43 +48,20 @@
              layout="@layout/card_save_recording"/>
     </android.support.v7.widget.CardView>
 
-    <com.github.jorgecastilloprz.FABProgressCircle
-        android:id="@+id/fabProgressCircle"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:arcWidth="28dp"
-        app:reusable="true"
+        android:src="@drawable/ic_mic_white_24dp"
+        android:layout_marginBottom="25dp"
+        app:rippleColor="@color/accent_dark"
+        app:elevation="@dimen/fab_elevation"
+        app:borderWidth="0dp"
+        android:scaleType="center"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        />
 
-        <!-- You can change it with the fab from the library you want to use -->
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/ic_mic_white_48dp"
-            android:layout_margin="25dp"
-            app:rippleColor="@color/accent_dark"
-            app:elevation="@dimen/fab_elevation"
-            android:scaleType="center"
-            app:borderWidth="0dp"
-            />
-
-    </com.github.jorgecastilloprz.FABProgressCircle>
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/cancel_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_close_black_24dp"
-        fab:fab_colorNormal="@color/accent"
-        fab:fab_colorPressed="@color/accent"
-        fab:fab_colorRipple="@color/accent_dark"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/control_panel"
-        android:layout_toEndOf="@+id/control_panel"
-        android:visibility="gone"
-        android:layout_margin="10dp"/>
     <RelativeLayout
         android:id="@+id/control_panel"
         android:visibility="gone"
