@@ -1,26 +1,24 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.model.application'
 
-android {
-    compileSdkVersion 23
-    buildToolsVersion "22.0.1"
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion "25.0.1"
 
-    defaultConfig {
-        applicationId "icechen1.com.blackbox"
-        minSdkVersion 15
-        targetSdkVersion 22
-        versionCode 21
-        versionName "1.1.8"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        defaultConfig {
+            applicationId "icechen1.com.blackbox"
+            minSdkVersion.apiLevel 16
+            targetSdkVersion.apiLevel 22
+            versionCode 22
+            versionName "1.1.9"
         }
-    }
-}
-repositories {
-    maven {
-        url "https://jitpack.io"
+        buildTypes {
+            release {
+                minifyEnabled false
+                proguardFiles.add(file("proguard-rules.pro"))
+                //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
     }
 }
 
@@ -48,6 +46,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.github.Angtrim:Android-Five-Stars-Library:v3.1'
 
+    compile project(':androidlame')
 }
 buildscript {
     repositories {

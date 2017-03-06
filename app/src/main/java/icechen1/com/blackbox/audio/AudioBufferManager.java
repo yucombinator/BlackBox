@@ -151,7 +151,7 @@ public class AudioBufferManager extends Thread {
         while(started && arecord.getState() == AudioRecord.STATE_INITIALIZED) {
             try {
                 //Write
-                arecord.read(buffer, 0, bufferSize);
+                int bytesread = arecord.read(buffer, 0, bufferSize);
                 //Read the byte array data to the circular buffer
                 int inserted = circBuffer.put(buffer, 0, bufferSize);
                 if(i%3 == 0){
@@ -178,8 +178,9 @@ public class AudioBufferManager extends Thread {
                 path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
             }
 
-            AudioFileWriter writer = new AudioFileWriter(null, path);
-            writer.setupHeader(arecord, circBuffer.length());
+            //WAVAudioFileWriter writer = new WAVAudioFileWriter(null, path);
+            MP3AudioFileWriter writer = new MP3AudioFileWriter(null, path);
+            writer.setupHeader(arecord, circBuffer.length(), mBufferSpec.second);
 
             arecord.stop();
             arecord.release();

@@ -1,6 +1,8 @@
 package icechen1.com.blackbox.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -35,6 +37,7 @@ import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 
 import angtrim.com.fivestarslibrary.FiveStarsDialog;
+import icechen1.com.blackbox.AppConstants;
 import icechen1.com.blackbox.R;
 import icechen1.com.blackbox.adapter.RecordingAdapter;
 import icechen1.com.blackbox.common.NavigationDrawerUtil;
@@ -310,6 +313,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Intent pref = new Intent(this, PreferenceActivity.class);
                 startActivity(pref);
                 return true;
+            case R.id.menu_app_upgrade:
+                Intent upg = new Intent(this, PremiumActivity.class);
+                startActivity(upg);
+                return true;
             case R.id.menu_suggestions:
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto: me+rewind@yuchenhou.com"));
@@ -323,5 +330,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return false;
     }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+    }
+
+    /*
+    @Override
+    public void onRedeemAutomaticOffer(Offer offer)
+    {
+        for(Feature feature : offer.getFeatures())
+        {
+            String featureRef = feature.getReference();
+            String value = feature.getValue();
+
+            // Provide the feature defined in the campaign to the user.
+            if(featureRef.toLowerCase().equals("premium")) {
+                // removes ads
+                final SharedPreferences.Editor e = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                e.putBoolean(AppConstants.IAP_PREF,true).apply();
+                new AlertDialog.Builder(this)
+                        .setTitle("Rewind")
+                        .setMessage(offer.getOfferAdditionalParameters().get("reward_message"))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setIcon(R.mipmap.ic_launcher)
+                        .show();
+            }
+        }
+    }
+    */
 }
 

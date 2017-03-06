@@ -19,6 +19,12 @@
             android:id="@+id/menu_app_rate"
             android:icon="@drawable/ic_thumb_up_black_24dp"
             android:title="@string/app_rate" />
+
+        <item
+            android:id="@+id/menu_app_upgrade"
+            android:icon="@drawable/ic_favorite_outline_black_24dp"
+            android:title="@string/upgrade" />
+
         <item
             android:id="@+id/menu_settings"
             android:icon="@drawable/ic_settings_black_18dp"

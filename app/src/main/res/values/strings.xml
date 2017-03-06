@@ -74,5 +74,6 @@
     <string name="unlock_now">Unlock now</string>
     <string name="thank_you_premium">Thanks for unlocking Rewind!</string>
     <string name="no_iap_service">Unable to load Rewind unlock information. Do you have the Play Store installed?</string>
+    <string name="upgrade">Upgrade...</string>
 
 </resources>

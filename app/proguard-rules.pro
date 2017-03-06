@@ -34,3 +34,14 @@
     <init>(java.lang.Throwable);
 }
 -keepclassmembers,includedescriptorclasses class ** { public void onEvent*(**); }
+-keep class com.batch.** {
+    *;
+}
+
+-keep class com.google.android.gms.** {
+    *;
+}
+
+-dontwarn com.batch.android.mediation.**
+
+-dontwarn com.batch.android.BatchPushService
