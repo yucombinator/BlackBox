@@ -2,6 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/notifications">
         <SwitchPreference
+            android:defaultValue="false"
+            android:key="use_mp3"
+            android:summary="@string/compress_files_summary"
+            android:title="@string/compress_files" />
+
+        <SwitchPreference
             android:defaultValue="true"
             android:key="always_on_notification"
             android:summary="@string/setting_always_on_summary"

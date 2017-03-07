@@ -28,7 +28,7 @@ public class WAVAudioFileWriter extends AudioFileWriter {
     void writeFromCircBuffer(CircularByteBuffer buffer) throws IOException {
         try
         {
-            for(int i = 0; i < buffer.size() ;i++) {
+            for(int i = 0; i < buffer.size(); i++) {
                 dos.writeByte(buffer.get());
             }
         }

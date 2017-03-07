@@ -78,7 +78,7 @@ public class AudioBufferManager extends Thread {
             try {
                 CircularByteBuffer circbuffer = tryAllocateCircularBuffer(bufferSizes.get(i).first);
                 if(circbuffer != null) {
-                    Log.i(LOG_TAG,"Final sample rate:" + bufferSizes.get(i).first + " with buffer size:"+ bufferSizes.get(i).second);
+                    Log.i(LOG_TAG,"Final sample rate: " + bufferSizes.get(i).first + " with buffer size:"+ bufferSizes.get(i).second);
                     Log.i(LOG_TAG,"Length of time is: " + mBufferDuration + " s");
                     mAllocationSuccess = true;
                     mCircularByteBuffer = circbuffer;
@@ -178,8 +178,13 @@ public class AudioBufferManager extends Thread {
                 path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
             }
 
-            //WAVAudioFileWriter writer = new WAVAudioFileWriter(null, path);
-            MP3AudioFileWriter writer = new MP3AudioFileWriter(null, path);
+            AudioFileWriter writer;
+            if(AppUtils.isMp3Enabled(mContext)) {
+                writer = new MP3AudioFileWriter(null, path);
+            } else {
+                writer = new WAVAudioFileWriter(null, path);
+            }
+
             writer.setupHeader(arecord, circBuffer.length(), mBufferSpec.second);
 
             arecord.stop();

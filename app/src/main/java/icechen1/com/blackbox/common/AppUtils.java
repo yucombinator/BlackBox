@@ -21,6 +21,11 @@ public class AppUtils {
     private final static int DAYS_UNTIL_PROMPT = 0;
     private final static int LAUNCHES_UNTIL_PROMPT = 3;
 
+    public static boolean isMp3Enabled(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean("use_mp3", false);
+    }
+
     public static boolean isPremium(Context context) {
         if(BuildConfig.DEBUG) {
             return true;

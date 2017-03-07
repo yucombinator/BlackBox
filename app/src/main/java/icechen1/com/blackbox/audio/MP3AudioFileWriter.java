@@ -9,13 +9,14 @@ import com.naman14.androidlame.LameBuilder;
 import java.io.EOFException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Created by YuChen on 2015-03-30.
  */
 public class MP3AudioFileWriter extends AudioFileWriter {
     private AndroidLame mAndroidLame;
-    private boolean isStereo = false;
     private byte[] mp3buffer;
     private int mBufferSize;
 
@@ -36,41 +37,42 @@ public class MP3AudioFileWriter extends AudioFileWriter {
         try
         {
             short[] copybuffer = new short[mBufferSize / 2];
-            Log.d("BlackBox", "mBufferSize " + mBufferSize);
+            byte[] bytebuffer = new byte[mBufferSize];
+            Log.d("Rewind", "mBufferSize " + mBufferSize);
             while(!buffer.isEmpty()) {
-                for(int i = 0; i < mBufferSize / 2; i++) {
-                    copybuffer[i] = (short)( ((buffer.get()&0xFF)<<8) | (buffer.get()&0xFF) );
+                for(int i = 0; i < mBufferSize; i++) {
+                    bytebuffer[i] = buffer.get();
                 }
-                int bytesEncoded = mAndroidLame.encode(copybuffer, copybuffer, mBufferSize, mp3buffer);
-                if(bytesEncoded > 0) {
+                ByteBuffer.wrap(bytebuffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(copybuffer);
+                int bytesEncoded = mAndroidLame.encode(copybuffer, copybuffer, mBufferSize / 2, mp3buffer);
+                if (bytesEncoded > 0) {
                     Log.d("BlackBox", "Encoded " + bytesEncoded);
                     os.write(mp3buffer, 0, bytesEncoded);
                 }
             }
 
         }
-        catch ( EOFException e )
+        catch ( EOFException | OutOfMemoryError e )
         {
             // nothing to do.
-            Log.e("BlackBox", "Error encoding MP3", e);
-        }
-        catch ( OutOfMemoryError e )
-        {
-            // nothing to do.
-            Log.e("BlackBox", "Error encoding MP3", e);
+            Log.e("Rewind", "Error encoding MP3", e);
+            throw e;
         }
     }
 
     void setupHeader(AudioRecord rec, int length, int bufferSize) throws IOException {
-        int byteRate = RECORDER_BPP * rec.getSampleRate() * rec.getChannelCount()/8;
-        isStereo = rec.getChannelCount() == 2;
         mBufferSize = bufferSize;
         mp3buffer = new byte[(int) (7200 + bufferSize * 2 * 1.25)];
 
         LameBuilder builder = new LameBuilder()
+                .setId3tagArtist("Rewind")
                 .setMode(LameBuilder.Mode.MONO)
                 .setInSampleRate(rec.getSampleRate())
                 .setOutChannels(1);
+                //.setOutBitrate(32)
+                //.setOutSampleRate(rec.getSampleRate())
+                //.setQuality(3)
+                //.setScaleInput(0.1f)
                 //.setOutBitrate(byteRate)
                 //.setOutSampleRate(rec.getSampleRate());
                 /*
@@ -96,17 +98,14 @@ public class MP3AudioFileWriter extends AudioFileWriter {
         int outputMp3buf = mAndroidLame.flush(mp3buffer);
 
         if (outputMp3buf > 0) {
-            try {
-                Log.i("BlackBox", "Flushed MP3");
-                os.write(mp3buffer, 0, outputMp3buf);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Log.i("BlackBox", "Flushed MP3");
+            os.write(mp3buffer, 0, outputMp3buf);
         }
 
+        mAndroidLame.close();
         os.flush();
         os.close();
-        Log.i("BlackBox", "Saved File at " + file.toURI());
+        Log.i("Rewind", "Saved File at " + file.toURI());
     }
 
     private static final int RECORDER_BPP = 16;

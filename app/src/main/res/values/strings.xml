@@ -75,5 +75,7 @@
     <string name="thank_you_premium">Thanks for unlocking Rewind!</string>
     <string name="no_iap_service">Unable to load Rewind unlock information. Do you have the Play Store installed?</string>
     <string name="upgrade">Upgrade...</string>
+    <string name="compress_files_summary">Save as smaller .mp3 files instead of .wav.</string>
+    <string name="compress_files">Compress Audio</string>
 
 </resources>
