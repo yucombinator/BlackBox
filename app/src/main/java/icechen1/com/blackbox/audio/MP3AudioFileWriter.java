@@ -69,27 +69,6 @@ public class MP3AudioFileWriter extends AudioFileWriter {
                 .setMode(LameBuilder.Mode.MONO)
                 .setInSampleRate(rec.getSampleRate())
                 .setOutChannels(1);
-                //.setOutBitrate(32)
-                //.setOutSampleRate(rec.getSampleRate())
-                //.setQuality(3)
-                //.setScaleInput(0.1f)
-                //.setOutBitrate(byteRate)
-                //.setOutSampleRate(rec.getSampleRate());
-                /*
-                .setMode(mode)
-                .setQuality(quality)
-                .setVbrMode(vbrMode)
-                .setVbrQuality(vbrQuality)
-                .setScaleInput(scaleInput)
-                .setId3tagTitle(title)
-                .setId3tagAlbum(album)
-                .setId3tagArtist(artist)
-                .setId3tagYear(year)
-                .setId3tagComment(comment)
-                .setLowpassFreqency(freq)
-                .setHighpassFreqency(freq)
-                .setAbrMeanBitrate(meanBitRate);
-                */
 
         mAndroidLame = builder.build(); //use this
     }
@@ -98,7 +77,7 @@ public class MP3AudioFileWriter extends AudioFileWriter {
         int outputMp3buf = mAndroidLame.flush(mp3buffer);
 
         if (outputMp3buf > 0) {
-            Log.i("BlackBox", "Flushed MP3");
+            Log.i("Rewind", "Flushed MP3");
             os.write(mp3buffer, 0, outputMp3buf);
         }
 
@@ -107,7 +86,4 @@ public class MP3AudioFileWriter extends AudioFileWriter {
         os.close();
         Log.i("Rewind", "Saved File at " + file.toURI());
     }
-
-    private static final int RECORDER_BPP = 16;
-
 }

@@ -41,9 +41,9 @@ public class WAVAudioFileWriter extends AudioFileWriter {
     void setupHeader(AudioRecord rec, int length, int bufferSize) throws IOException {
         long byteRate = RECORDER_BPP * rec.getSampleRate() * rec.getChannelCount()/8;
 
-        long totalDataLen = bufferSize + 36;
+        long totalDataLen = length + 36;
 
-        writeWaveFileHeader(os, bufferSize, totalDataLen,
+        writeWaveFileHeader(os, length, totalDataLen,
                 rec.getSampleRate(), rec.getChannelCount(), byteRate);
     }
 
