@@ -9,8 +9,8 @@ model {
             applicationId "icechen1.com.blackbox"
             minSdkVersion.apiLevel 16
             targetSdkVersion.apiLevel 22
-            versionCode 22
-            versionName "1.1.9"
+            versionCode 24
+            versionName "1.2.0"
         }
         buildTypes {
             release {
