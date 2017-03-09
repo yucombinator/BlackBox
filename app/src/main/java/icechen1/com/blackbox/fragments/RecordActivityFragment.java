@@ -12,12 +12,15 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -38,14 +41,16 @@ import icechen1.com.blackbox.messages.RecordStatusMessage;
 import icechen1.com.blackbox.messages.RecordingSavedMessage;
 import icechen1.com.blackbox.provider.recording.RecordingContentValues;
 import icechen1.com.blackbox.services.AudioRecordService;
+import icechen1.com.blackbox.views.ResizeWidthAnimation;
 import icechen1.com.blackbox.views.VisualizerView;
+import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
 import static humanize.Humanize.duration;
 
 public class RecordActivityFragment extends Fragment implements RecordingSampler.CalculateVolumeListener {
 
     private View mRoot;
-    private FloatingActionButton mFabBtn;
+    private FloatingTextButton mSaveBtn;
     private boolean mRecording = false;
     private View mCtlPanel;
     private RecordingSampler mRecordingSampler;
@@ -57,6 +62,9 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     private int mTime;
     private TextView mDuration;
     private RadioGroup mRGroup;
+    private LinearLayout mBtnsView;
+    private FloatingTextButton mCancelBtn;
+    private View mCoordinatorLayout;
 
     public RecordActivityFragment() {
     }
@@ -71,19 +79,41 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.fragment_record, container, false);
+        mCoordinatorLayout = mRoot.findViewById(R.id.container);
         mCtlPanel = mRoot.findViewById(R.id.control_panel);
-        mFabBtn = (FloatingActionButton) mRoot.findViewById(R.id.fab);
+        mSaveBtn = (FloatingTextButton) mRoot.findViewById(R.id.action_save_button);
+        mCancelBtn = (FloatingTextButton) mRoot.findViewById(R.id.action_cancel_button);
+        mBtnsView = (LinearLayout) mRoot.findViewById(R.id.action_buttons_view);
 
         final Vibrator vib = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        mRoot.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+
+        mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!mRecording) {
                     startRecording();
                 } else {
-                    stopRecording();
+                    stopRecording(true);
                 }
                 vib.vibrate(25);
+            }
+        });
+
+        mCancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mRecording) {
+                    // confirm
+                    Snackbar snackbar = Snackbar
+                            .make(mCoordinatorLayout, getResources().getText(R.string.are_you_sure).toString(), Snackbar.LENGTH_LONG)
+                            .setAction(getResources().getText(R.string.yes).toString(), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    stopRecording(false);
+                                }
+                            });
+                    snackbar.show();
+                }
             }
         });
 
@@ -184,8 +214,8 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
             // previously invisible view
 
             // get the center for the clipping circle
-            int cx = (int) mFabBtn.getX() + mFabBtn.getWidth()  / 2;
-            int cy = (int) mFabBtn.getY() + mFabBtn.getHeight()  / 2;
+            int cx = (int) mBtnsView.getX() + mBtnsView.getWidth()  / 2;
+            int cy = (int) mBtnsView.getY() + mBtnsView.getHeight()  / 2;
             // get the final radius for the clipping circle
             int finalRadius = Math.max(mCtlPanel.getWidth(), mCtlPanel.getHeight());
 
@@ -197,15 +227,15 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
 
         // make the view visible and start the animation
         mCtlPanel.setVisibility(View.VISIBLE);
-        mFabBtn.bringToFront();
+        //mBtnsView.bringToFront();
         mDuration.setText(duration(mTime));
     }
 
     private void hideControlPanel(boolean shouldAnimate){
         if(shouldAnimate && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
             // get the center for the clipping circle
-            int cx = (int) mFabBtn.getX() + mFabBtn.getWidth()  / 2;
-            int cy = (int) mFabBtn.getY() + mFabBtn.getHeight()  / 2;
+            int cx = (int) mBtnsView.getX() + mBtnsView.getWidth()  / 2;
+            int cy = (int) mBtnsView.getY() + mBtnsView.getHeight()  / 2;
 
             // get the initial radius for the clipping circle
             int initialRadius = mCtlPanel.getWidth();
@@ -278,9 +308,13 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         //startRecordingUI();
     }
 
-    private void stopRecording(){
+    private void stopRecording(boolean saving){
         Intent i = new Intent(getActivity(), AudioRecordService.class);
-        i.putExtra("mode", AudioRecordService.MODE_STOP);
+        if(saving)
+            i.putExtra("mode", AudioRecordService.MODE_STOP);
+        else
+            i.putExtra("mode", AudioRecordService.MODE_STOP_NO_SAVE);
+
         getActivity().startService(i);
         //stopRecordingUI();
     }
@@ -291,9 +325,16 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         mRecording = false;
         mListeningCard.setVisibility(View.GONE);
         mStartListeningCard.setVisibility(View.VISIBLE);
+        // bit of a hack to set mCancelBtn to be gone (since GONE does not set radius properly)
+        // mCancelBtn.getLayoutParams().width = 0;
+        ResizeWidthAnimation anim = new ResizeWidthAnimation(mCancelBtn, 0);
+        anim.setDuration(500);
+        mCancelBtn.startAnimation(anim);
+
         mStartListeningCard.bringToFront();
-        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_mic_white_24dp));
-        mFabBtn.bringToFront();
+        mSaveBtn.setTitle(getResources().getText(R.string.action_start_title).toString());
+        mSaveBtn.setIconDrawable(getResources().getDrawable(R.drawable.ic_mic_white_24dp));
+        mBtnsView.bringToFront();
     }
 
     private void startRecordingUI(boolean shouldAnimate){
@@ -301,9 +342,17 @@ public class RecordActivityFragment extends Fragment implements RecordingSampler
         tintSystemBarsForStartRecord();
         mStartListeningCard.setVisibility(View.GONE);
         mListeningCard.setVisibility(View.VISIBLE);
+        // bit of a hack to set mCancelBtn to be visible (since GONE does not set radius properly)
+        // mCancelBtn.getLayoutParams().width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        ResizeWidthAnimation anim = new ResizeWidthAnimation(mCancelBtn, LinearLayout.LayoutParams.WRAP_CONTENT);
+        anim.setDuration(500);
+        mCancelBtn.startAnimation(anim);
+
+        mCancelBtn.setVisibility(View.VISIBLE);
         mListeningCard.bringToFront();
-        mFabBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
-        mFabBtn.bringToFront();
+        mSaveBtn.setTitle(getResources().getText(R.string.action_save_title).toString());
+        mSaveBtn.setIconDrawable(getResources().getDrawable(R.drawable.ic_stop_white_24dp));
+        mBtnsView.bringToFront();
         mRecording = true;
     }
 

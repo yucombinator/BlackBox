@@ -1,90 +1,128 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
-    android:layout_height="match_parent"
-    tools:context="icechen1.com.blackbox.fragments.RecordActivityFragment"
-    android:background="@color/dark_bkg">
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_start_listening"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:layout_margin="16dp"
-        card_view:cardCornerRadius="4dp">
-        <include layout="@layout/card_not_recording"/>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_listening"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:visibility="gone"
-        android:animateLayoutChanges="true"
-        card_view:cardCornerRadius="4dp">
-        <include layout="@layout/card_recording"/>
-    </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_save_recording"
-        android:visibility="gone"
-        android:animateLayoutChanges="true"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        android:layout_below="@+id/card_start_listening"
-        android:layout_margin="16dp">
-        <include
-             layout="@layout/card_save_recording"/>
-    </android.support.v7.widget.CardView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_mic_white_24dp"
-        android:layout_marginBottom="25dp"
-        app:rippleColor="@color/accent_dark"
-        app:elevation="@dimen/fab_elevation"
-        app:borderWidth="0dp"
-        android:scaleType="center"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+    android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/control_panel"
-        android:visibility="gone"
-        android:background="@color/accent_dark"
         android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        tools:context="icechen1.com.blackbox.fragments.RecordActivityFragment"
+        app:layout_behavior="icechen1.com.blackbox.views.RelativeLayoutSnackbarBehavior"
+        android:background="@color/dark_bkg">
 
-        <icechen1.com.blackbox.views.VisualizerView
-            android:id="@+id/visualizer"
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_start_listening"
+            android:layout_gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="125dp"
-            android:background="@android:color/transparent"
-            app:numColumns="64"
-            app:renderColor="@color/accent"
-            app:renderRange="both"
-            android:gravity="bottom"
-            app:renderType="bar|fade"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-    </RelativeLayout>
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:layout_margin="16dp"
+            card_view:cardCornerRadius="4dp">
+            <include layout="@layout/card_not_recording"/>
+        </android.support.v7.widget.CardView>
 
-</RelativeLayout>
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_listening"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            android:animateLayoutChanges="true"
+            card_view:cardCornerRadius="4dp">
+            <include layout="@layout/card_recording"/>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_save_recording"
+            android:visibility="gone"
+            android:animateLayoutChanges="true"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="4dp"
+            android:layout_below="@+id/card_start_listening"
+            android:layout_margin="16dp">
+            <include
+                 layout="@layout/card_save_recording"/>
+        </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/action_buttons_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:animateLayoutChanges="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                android:id="@+id/action_cancel_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_behavior="ru.dimorinny.floatingtextbutton.behavior.SnackbarBehavior"
+                app:floating_background_color="@color/gray"
+                app:floating_icon="@drawable/ic_action_delete"
+                app:floating_title="@string/action_cancel_title"
+                app:floating_title_color="@android:color/white"
+                app:elevation="@dimen/fab_elevation"
+                app:rippleColor="@color/accent_dark"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="invisible"
+                />
+
+            <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                android:id="@+id/action_save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_behavior="ru.dimorinny.floatingtextbutton.behavior.SnackbarBehavior"
+                app:floating_background_color="@color/accent"
+                app:floating_icon="@drawable/ic_mic_white_24dp"
+                app:floating_title="@string/action_start_title"
+                app:floating_title_color="@android:color/white"
+                android:scaleType="center"
+                app:elevation="@dimen/fab_elevation"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                app:rippleColor="@color/accent_dark"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/control_panel"
+            android:visibility="gone"
+            android:background="@color/accent_dark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
+            <icechen1.com.blackbox.views.VisualizerView
+                android:id="@+id/visualizer"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:background="@android:color/transparent"
+                app:numColumns="64"
+                app:renderColor="@color/accent"
+                app:renderRange="both"
+                android:gravity="bottom"
+                app:renderType="bar|fade"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

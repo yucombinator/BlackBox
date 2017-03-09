@@ -38,6 +38,7 @@ public class AudioBufferManager extends Thread {
     private boolean mAllocationSuccess = false;
     private CircularByteBuffer mCircularByteBuffer;
     private Pair<Integer, Integer> mBufferSpec;
+    private boolean isSaving = false;
 
     public interface OnAudioRecordStateUpdate{
         void onRecordingSaved();
@@ -170,59 +171,65 @@ public class AudioBufferManager extends Thread {
         }
 
         // Done recording, saving data
-        try {
-            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-            String path = getPrefs.getString("path", "");
-            if(path.equals("")){
-                // Default path
-                path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
+        if(isSaving) {
+            try {
+                SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                String path = getPrefs.getString("path", "");
+                if (path.equals("")) {
+                    // Default path
+                    path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Rewind/";
+                }
+
+                AudioFileWriter writer;
+                if (AppUtils.isMp3Enabled(mContext)) {
+                    writer = new MP3AudioFileWriter(null, path);
+                } else {
+                    writer = new WAVAudioFileWriter(null, path);
+                }
+
+                writer.setupHeader(arecord, circBuffer.length(), mBufferSpec.second);
+
+                arecord.stop();
+                arecord.release();
+
+                Log.d(LOG_TAG, "buffer length " + circBuffer.length());
+                writer.writeFromCircBuffer(circBuffer);
+                writer.close();
+
+                long currentMillis = System.currentTimeMillis();
+                long actualTime = AppUtils.getBufferSavedTime(startedTime, currentMillis, mBufferDuration);
+                //save entry to the database
+                RecordingContentValues saved = DatabaseHelper.saveRecording(
+                        mContext,
+                        mContext.getResources().getString(R.string.recorded_on, new SimpleDateFormat("dd MMM").format(new Date(currentMillis))),
+                        writer.getPath(),
+                        actualTime,
+                        currentMillis);
+                EventBus.getDefault().post(new RecordingSavedMessage(saved));
+                EventBus.getDefault().post(new DatabaseUpdatedMessage());
+
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "I/O error", e);
+                if (mCallback != null) {
+                    mCallback.onRecordingError(mContext.getString(R.string.io_error), e);
+                }
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Error", e);
+                if (mCallback != null) {
+                    mCallback.onRecordingError(mContext.getString(R.string.unknown_error), e);
+                }
             }
-
-            AudioFileWriter writer;
-            if(AppUtils.isMp3Enabled(mContext)) {
-                writer = new MP3AudioFileWriter(null, path);
-            } else {
-                writer = new WAVAudioFileWriter(null, path);
+            if(mCallback != null){
+                mCallback.onRecordingSaved();
             }
-
-            writer.setupHeader(arecord, circBuffer.length(), mBufferSpec.second);
-
+        } else {
             arecord.stop();
             arecord.release();
-
-            Log.d(LOG_TAG, "buffer length " + circBuffer.length());
-            writer.writeFromCircBuffer(circBuffer);
-            writer.close();
-
-            long currentMillis = System.currentTimeMillis();
-            long actualTime = AppUtils.getBufferSavedTime(startedTime, currentMillis, mBufferDuration);
-            //save entry to the database
-            RecordingContentValues saved = DatabaseHelper.saveRecording(
-                    mContext,
-                    mContext.getResources().getString(R.string.recorded_on, new SimpleDateFormat("dd MMM").format(new Date(currentMillis))),
-                    writer.getPath(),
-                    actualTime,
-                    currentMillis);
-            EventBus.getDefault().post(new RecordingSavedMessage(saved));
-            EventBus.getDefault().post(new DatabaseUpdatedMessage());
-
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "I/O error", e);
-            if(mCallback != null){
-                mCallback.onRecordingError(mContext.getString(R.string.io_error), e);
-            }
-        } catch (Exception e){
-            Log.e(LOG_TAG, "Error", e);
-            if(mCallback != null){
-                mCallback.onRecordingError(mContext.getString(R.string.unknown_error), e);
-            }
-        }
-        if(mCallback != null){
-            mCallback.onRecordingSaved();
         }
     }
-    public void close() {
+    public void close(boolean toSave) {
         started = false;
+        isSaving = toSave;
     }
 
 

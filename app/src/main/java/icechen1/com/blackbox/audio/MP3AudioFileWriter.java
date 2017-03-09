@@ -40,13 +40,15 @@ public class MP3AudioFileWriter extends AudioFileWriter {
             byte[] bytebuffer = new byte[mBufferSize];
             Log.d("Rewind", "mBufferSize " + mBufferSize);
             while(!buffer.isEmpty()) {
-                for(int i = 0; i < mBufferSize; i++) {
+                //Log.d("Rewind", "buffer length: " + buffer.length());
+                int toPop = buffer.length() >= mBufferSize ? mBufferSize : buffer.length();
+                for(int i = 0; i < toPop; i++) {
                     bytebuffer[i] = buffer.get();
                 }
                 ByteBuffer.wrap(bytebuffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(copybuffer);
-                int bytesEncoded = mAndroidLame.encode(copybuffer, copybuffer, mBufferSize / 2, mp3buffer);
+                int bytesEncoded = mAndroidLame.encode(copybuffer, copybuffer, toPop / 2, mp3buffer);
                 if (bytesEncoded > 0) {
-                    Log.d("BlackBox", "Encoded " + bytesEncoded);
+                    //Log.d("BlackBox", "Encoded " + bytesEncoded);
                     os.write(mp3buffer, 0, bytesEncoded);
                 }
             }

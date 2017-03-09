@@ -77,5 +77,9 @@
     <string name="upgrade">Upgrade...</string>
     <string name="compress_files_summary">Save as smaller .mp3 files instead of .wav.</string>
     <string name="compress_files">Compress Audio</string>
+    <string name="action_cancel_title">Cancel</string>
+    <string name="action_save_title">Save Recording</string>
+    <string name="action_start_title">Start Recording</string>
+    <string name="are_you_sure">Are you sure?</string>
 
 </resources>

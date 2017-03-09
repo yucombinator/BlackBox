@@ -42,6 +42,8 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
     public static final int MODE_START = 1;
     public static final int MODE_STOP = 2;
     public static final int MODE_SET_PASSIVE_NOTIF = 3;
+    public static final int MODE_STOP_NO_SAVE = 4;
+
     private AudioBufferManager mAudio;
 
     NotificationManager mNotificationManager;
@@ -83,7 +85,9 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
                     startRecording();
                 } else if (mMode == MODE_STOP){
                     Toast.makeText(this, getResources().getString(R.string.stopped_listening), Toast.LENGTH_SHORT).show();
-                    stopRecording();
+                    stopRecording(true);
+                } else if (mMode == MODE_STOP_NO_SAVE){
+                    stopRecording(false);
                 } else if(mMode == MODE_SET_PASSIVE_NOTIF){
                     setUpPassiveNotification();
                 }
@@ -131,10 +135,10 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
         updateWidgets(true);
     }
 
-    private void stopRecording() {
+    private void stopRecording(boolean isSaving) {
         if(mAudio != null) {
             updateSavingNotification();
-            mAudio.close();
+            mAudio.close(isSaving);
         }
 
         //set up notif
@@ -314,7 +318,7 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
                 case TelephonyManager.CALL_STATE_RINGING:
                     if(mAudio != null && mAudio.isRecording()){
                         suspended = true;
-                        stopRecording();
+                        stopRecording(true);
                     }
                     break;
                 default:
