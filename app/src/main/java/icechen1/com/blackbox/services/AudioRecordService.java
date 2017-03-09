@@ -137,8 +137,14 @@ public class AudioRecordService extends Service implements AudioBufferManager.On
 
     private void stopRecording(boolean isSaving) {
         if(mAudio != null) {
-            updateSavingNotification();
+            if(isSaving) {
+                updateSavingNotification();
+            }
+
             mAudio.close(isSaving);
+            if(!isSaving) {
+                stopForeground(true);
+            }
         }
 
         //set up notif
